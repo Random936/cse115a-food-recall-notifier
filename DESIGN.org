@@ -6,21 +6,24 @@ Food Recall Notifier will be created to notify users of any recalled food quickl
 
 * Components
 
-** Android/IOS Mobile Application
-
-** Backend API 
-
-** Backend Database
-
-** FDA Web Scraper
++ *Android/IOS Mobile Application:*
++ *Backend API:*
++ *Backend Database:*
++ *FDA Web Scraper:*
 
 * Required Features
 
 ** TODO UPC Number Lookup
 
+The client most importantly must incorporate the ability to lookup a UPC number and return any recall information if it exists. This is the core functionality of the app.
+
 ** TODO Barcode Scanner
 
+The ability to scan a barcode using the phone's camera should be implemented to allow for the easy lookup of UPC numbers. Ideally this should be implemented on the client side to avoid unnecessary computation on the backend.
+
 ** TODO Real Time Search
+
+The IOS/Android application should provide a responsive search functionality such that when the search query is changed, the results are automatically updated to reflect the current search term. This will require the ability to search for partial UPC numbers on the backend.
 
 ** TODO Display of Recalled Item
 
@@ -33,6 +36,30 @@ This display should include:
 + Item Being Recalled
 
 * Interfaces
+
+** Web Scraper
+
+There are two interfaces defined within the web scraper to logically separate crawling and parsing. The intention of adding a separation here is to allow for better modularity when incorporating more recall sources or crawling methods.
+
+*** Web Crawler
+
+#+begin_src python
+class WebCrawler:
+    def __init__(self):
+        pass
+
+    # TODO
+#+end_src
+
+*** Web Parser
+
+#+begin_src python
+class WebParser:
+    def __init__(self):
+        pass
+
+    # TODO
+#+end_src
 
 * API Routes
 
@@ -67,15 +94,23 @@ Authentication is required for all web scraper API routes.
 
 *** ~/jobs/query~
 
+This route is used to assign a job to an idle web scraper. Web scrapers will query the backend server for jobs at a constant time interval (eg. 5 minutes) or after completing a job.
+
+**** Addressing Lost Jobs
+
+To work around the problem of jobs being allocated and never completed, once the job is assigned, the job will be marked "in progress" and will start a timer awaiting the results. If the job reaches a timeout (due to a failure for example), it will once again be added to the pending job queue and later reassigned.
+
 *** ~/jobs/finish~
+
+This route will be used to mark a job complete and store any results generated from said job.
 
 *** ~/jobs/pending~
 
-Not necessarily a required route, though could be helpful for determining back logged tasks.
+Not necessarily a required route, though could be helpful for determining the number of back logged jobs. A GET request to route will return an integer with the number of pending jobs.
 
-* Dependencies
+* Notable Dependencies
 
-+ SQL/MongoDB - Need to decide here...
++ SQL - Backend Database
 + Flask - Backend API
 + BeautifulSoup - Web Scrapers
 
