@@ -10,6 +10,8 @@ Food Recall Notifier will be created to notify users of any recalled food quickl
 
 ** Backend API 
 
+** Backend Database
+
 ** FDA Web Scraper
 
 * Required Features
@@ -34,4 +36,51 @@ This display should include:
 
 * API Routes
 
+** Client
 
+No authentication should be required for any of the client API routes.
+
+*** ~/search/<UPC>~
+
+This route will search for any matching UPC number given a specific UPC or a partial UPC. It will return a list of UPC records with a brief set of data.
+
+**** Example Success Response
+**** Example Failed Response
+
+*** ~/query/<UPC>~
+
+This route will query a single UPC and return the first matching record found with a full set of the scraped data.
+
+**** Example Success Response
+**** Example Failed Response
+
+*** ~/image/<UPC>~
+
+This route will query a single UPC and return the first matching record found with a full set of the scraped data.
+
+**** Example Success Response
+**** Example Failed Response
+
+** Web Scrapers
+
+Authentication is required for all web scraper API routes.
+
+*** ~/jobs/query~
+
+*** ~/jobs/finish~
+
+*** ~/jobs/pending~
+
+Not necessarily a required route, though could be helpful for determining back logged tasks.
+
+* Dependencies
+
++ SQL/MongoDB - Need to decide here...
++ Flask - Backend API
++ BeautifulSoup - Web Scrapers
+
+* Security Considerations
+
+** API Keys
+
+In our current plan, the client will never write to the database and will only ever read based on a UPC number. To prevent a malicious request from writing to the database using the same API calls used by the web scraper, we will need to employ API keys.
