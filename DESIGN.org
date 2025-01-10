@@ -1,0 +1,37 @@
+* CSE115A - Food Recall Notifier
+
+* Vision Statement
+
+Food Recall Notifier will be created to notify users of any recalled food quickly and through their phone based on the [[https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts][FDA website]]. In order to more quickly alert the user of recall with minimal time impact, a mobile application will be used allowing for bar code scanning.
+
+* Components
+
+** Android/IOS Mobile Application
+
+** Backend API 
+
+** FDA Web Scraper
+
+* Required Features
+
+** TODO UPC Number Lookup
+
+** TODO Barcode Scanner
+
+** TODO Real Time Search
+
+** TODO Display of Recalled Item
+
+This display should include:
++ The UPC Number
++ Image of the recalled item
++ Date of recall
++ Reason for Announcement
++ Brand Name
++ Item Being Recalled
+
+* Interfaces
+
+* API Routes
+
+
