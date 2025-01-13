@@ -61,6 +61,34 @@ class WebParser:
     # TODO
 #+end_src
 
+** Database Interfaces
+
+*** Database
+
+#+begin_src python
+class Database:
+    def __init__(self, database):
+        pass
+#+end_src
+
+*** DBSearcher
+
+This could logically split on the methods used to lookup databases. For example, a DBSearcher could be used to separate the logic between UPC lookups and barcode lookups. This could also be used to search for other fields such as expiration date, etc.
+
+#+begin_src python
+class DBSearcher:
+    def __init__(self, database):
+        pass
+
+    # Returns an array of records from a database query.
+    def search(self, query) -> list:
+        raise NotImplementedError
+
+    # Returns a single record from a query.
+    def query(self, query) -> dict:
+        raise NotImplementedError
+#+end_src
+
 * API Routes
 
 ** Client
@@ -72,21 +100,56 @@ No authentication should be required for any of the client API routes.
 This route will search for any matching UPC number given a specific UPC or a partial UPC. It will return a list of UPC records with a brief set of data.
 
 **** Example Success Response
+
+#+begin_src json
+[
+    {"upc": "123123123123", "recall_reason": "salmonella", "date_posted": 1736785262},
+    {"upc": "123123123123", "recall_reason": "salmonella", "date_posted": 1736785262},
+    {"upc": "123123123123", "recall_reason": "salmonella", "date_posted": 1736785262}
+]
+#+end_src
+
 **** Example Failed Response
+
+#+begin_src json
+[]
+#+end_src
 
 *** ~/query/<UPC>~
 
 This route will query a single UPC and return the first matching record found with a full set of the scraped data.
 
 **** Example Success Response
+
+#+begin_src json
+{
+    "upc": "123123123123",
+    "item_name": "Raw Chicken 12 ct.",
+    "brand_name": "Raw Chicken Inc.",
+    "expiration_date": "2025/01/13",
+    "recall_reason": "salmonella",
+    "date_posted": 1736785262
+}
+#+end_src
+
 **** Example Failed Response
+
+#+begin_src json
+{"error": "UPC not found"}
+#+end_src
 
 *** ~/image/<UPC>~
 
 This route will query a single UPC and return the first matching record found with a full set of the scraped data.
 
 **** Example Success Response
+
+The response will be the image itself similar to a GET request for said image.
+
 **** Example Failed Response
+
+Failed response will be a non 200 HTTP status code (ex. 404, 500).
+
 
 ** Web Scrapers
 
