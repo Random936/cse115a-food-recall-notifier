@@ -35,6 +35,10 @@ This display should include:
 + Brand Name
 + Item Being Recalled
 
+** TODO Search Sort Feature
+
+Users should be able to sort by date and category.
+
 * Interfaces
 
 ** Web Scraper
