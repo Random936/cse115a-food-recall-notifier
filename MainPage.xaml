@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="Food_Recall_Notif.MainPage">
+
+    <!-- Define Resources -->
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <x:String x:Key="search">&#xee9d;</x:String>
+            <x:String x:Key="camera">&#xe378;</x:String>
+            <x:String x:Key="filter">&#xe801;</x:String>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid>
+        <!-- Header Section -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Search Bar and Barcode Button Section -->
+        <Grid Grid.Row="0"
+              Padding="10"
+              BackgroundColor="#FF6BB0E9">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Search Bar with Rounded Edges -->
+            <Border StrokeShape="RoundRectangle 20,20,20,20"
+                    BackgroundColor="Black"
+                    Padding="0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Search Bar -->
+                    <SearchBar Grid.Column="0"
+                               Placeholder="Search food item..."
+                               BackgroundColor="Transparent"
+                               CancelButtonColor="Black"
+                               TextColor="Black"
+                               Margin="10,0,0,0"/>
+
+                    <!-- Round Camera Button -->
+                    <Button Grid.Column="1"
+                            x:Name="CameraBtn"
+                            Clicked="OnCameraButtonClicked">
+                        <Button.ImageSource>
+                            <FontImageSource FontFamily="FluentIcons"
+                                             Glyph="{StaticResource camera}"/>
+                        </Button.ImageSource>
+                    </Button>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- Main Content Section -->
+        <ScrollView Grid.Row="1">
+            <StackLayout Padding="10">
+                <!-- Alerts Section -->
+                <StackLayout BackgroundColor="#FFCDD2"
+                             Padding="10">
+                    <Label Text="Alert"
+                           FontSize="18"
+                           TextColor="Black"/>
+                    <Label Text="Today's recalls"
+                           FontSize="14"
+                           TextColor="Black"/>
+                    <Label Text="Ralph's pork"
+                           FontSize="14"
+                           TextColor="Black"/>
+                    <Button Text="View"
+                            BackgroundColor="#2196F3"
+                            TextColor="White"
+                            HorizontalOptions="Start"/>
+                </StackLayout>
+
+                <!-- Recent Recalls Section -->
+                <StackLayout Margin="0,20,0,0">
+                    <Label Text="Recent recalls"
+                           FontSize="18"
+                           TextColor="Black"/>
+                    <Picker Title="Filter by category">
+                        <Picker.Items>
+                            <x:String>All</x:String>
+                            <x:String>Food</x:String>
+                            <x:String>Drugs</x:String>
+                        </Picker.Items>
+                    </Picker>
+
+                    <!-- Food Item -->
+                    <StackLayout BackgroundColor="#E3F2FD"
+                                 Padding="10"
+                                 Margin="0,10,0,0">
+                        <Label Text="Food item"
+                               FontSize="16"
+                               TextColor="Black"/>
+                        <Label Text="Details"
+                               FontSize="14"
+                               TextColor="Black"/>
+                    </StackLayout>
+
+                    <!-- Drug Item -->
+                    <StackLayout BackgroundColor="#E3F2FD"
+                                 Padding="10"
+                                 Margin="0,10,0,0">
+                        <Label Text="Drug item"
+                               FontSize="16"
+                               TextColor="Black"/>
+                        <Label Text="Details"
+                               FontSize="14"
+                               TextColor="Black"/>
+                    </StackLayout>
+                </StackLayout>
+            </StackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>
