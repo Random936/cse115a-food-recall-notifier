@@ -1,9 +1,9 @@
 import json
 from flask import Flask
-from database import Database, CsvDB
+from database import Database, StaticDB
 
 app = Flask(__name__)
-database = CsvDB('/home/media/recalls-market-withdrawals-safety-alerts.csv')
+database = StaticDB('/home/random/cse115a-food-recall-notifier/db.json')
 
 assert isinstance(database, Database)
 
@@ -14,15 +14,15 @@ def root_path():
 
 
 @app.route('/query/<upc>')
-def api_query(upc: int = 0):
-    if not isinstance(upc, int) or not upc >= 0:
+def api_query(upc: str):
+    if not upc.isdigit() or not int(upc) >= 0:
         return json.dumps({"error": "Invalid UPC provided"})
 
-    product = database.get(upc)
+    product = database.query(upc)
     if product is None:
         return json.dumps({"error": "UPC not found"})
 
-    return product.to_json()
+    return json.dumps(product)
 
 
 if __name__ == '__main__':

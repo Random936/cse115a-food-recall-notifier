@@ -1,4 +1,4 @@
-import csv
+import json
 
 class Database:
     def query(self, key):
@@ -14,28 +14,15 @@ class Database:
         raise NotImplementedError
 
 
-class CsvDB(Database):
+class StaticDB(Database):
     def __init__(self, csv_path):
         self.path = csv_path
-        self.db = {}
         self.update()
 
     def update(self):
         with open(self.path, 'r') as f:
-            reader = csv.DictReader(f)
+            self.db = json.load(f)
 
-            row = {
-                "upc": 
-
-
-           ['Date',
-            'Brand-Names',
-            'Product-Description',
-            'Product-Types',
-            'Recall-Reason-Description',
-            'Company-Name',
-            'Terminated Recall'] 
-            
-            print(reader.fieldnames)
-            self.db 
-
+    def query(self, upc):
+        print(self.db)
+        return self.db.get(str(upc))

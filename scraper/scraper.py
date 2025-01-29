@@ -19,7 +19,7 @@ for raw_product in res["data"]:
         print(f"Failed to request data for {page}", file=sys.stderr)
         continue
 
-    upcs = re.findall(r'(?!<=[0-9])([0-9]{11}|[0-9]{13})(?![0-9])', res.text)
+    upcs = re.findall(r'(?!<=[0-9])[0-9]{11,13}(?![0-9])', res.text)
     if len(upcs) == 0:
         print(f"Failed to find UPC for {page}", file=sys.stderr)
         continue
