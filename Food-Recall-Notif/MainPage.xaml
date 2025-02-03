@@ -1,0 +1,87 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Food_Recall_Notif.MainPage"
+             BackgroundColor="{StaticResource Background}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Color x:Key="Background">#F4F1DE</Color>
+            <Color x:Key="Yellow">#F2CC8F</Color>
+            <Color x:Key="Green">#81B29A</Color>
+            <Color x:Key="Purple">#3D405B</Color>
+            <Color x:Key="Red">#E07A5F</Color>
+            <x:String x:Key="camera">&#xe2ad;</x:String>
+            <x:String x:Key="apple_1">&#xe675;</x:String>
+            <x:String x:Key="apple_2">&#xe674;</x:String>
+            <x:String x:Key="medical_1">&#xf1ef;</x:String>
+            <x:String x:Key="medical_2">&#xe201;</x:String>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <StackLayout Grid.Row="0"
+                     Padding="10"
+                     Spacing="10">
+            <!-- Header Section -->
+            <Border
+                Stroke="{StaticResource Green}"
+                StrokeShape="RoundRectangle 20,20,20,20"
+                BackgroundColor="{StaticResource Green}">
+                <SearchBar Placeholder="Search items..."
+                           BackgroundColor="{StaticResource Background}"
+                           TextColor="black"
+                           TextChanged="SearchBar_TextChanged"
+                           SearchButtonPressed="SearchBar_SearchButtonPressed"/>
+            </Border>
+            <Border
+                StrokeShape="RoundRectangle 20,20,20,20"
+                Padding="15"
+                BackgroundColor="{StaticResource Yellow}">
+                <Grid>
+                    <!-- Define Rows: One for the dynamic text, one for the button -->
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <!-- Dynamic text (auto height) -->
+                        <RowDefinition Height="60"/>
+                        <!-- Button (remaining space) -->
+                    </Grid.RowDefinitions>
+
+                    <!-- Define Columns: Three columns for layout -->
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Dynamic Text (Recent Recalls) -->
+                    <Label Grid.Row="0"
+                           Grid.Column="0"
+                           Grid.ColumnSpan="3"
+                           Text="Latest Recall:"
+                           FontSize="16"
+                           FontAttributes="Bold"
+                           TextColor="Black"
+                           HorizontalOptions="Start"
+                           VerticalOptions="Start"
+                           Padding="5"/>
+
+                    <!-- View Button at Bottom Left -->
+                    <Button Grid.Row="1"
+                            Grid.Column="0"
+                            Text="View"
+                            BackgroundColor="{StaticResource Red}"
+                            CornerRadius="20"
+                            WidthRequest="75"
+                            HorizontalOptions="Start"
+                            VerticalOptions="End"/>
+                </Grid>
+            </Border>
+            <!-- Bottom Navigation -->
+
+        </StackLayout>
+
+    </Grid>
+</ContentPage>

@@ -1,0 +1,29 @@
+# Ignore build and binary files
+bin/
+obj/
+*.exe
+*.dll
+
+# Ignore user-specific files
+*.user
+*.suo
+
+# Ignore IDE files (for Visual Studio)
+.vs/
+*.csproj.user
+
+# Ignore logs
+*.log
+
+# Ignore large files and temporary files
+*.tmp
+.DS_Store
+*.zip
+*.tar.gz
+
+# Ignore platform-specific builds
+platforms/
+
+# Ignore secrets
+appsettings.json
+secrets.json
