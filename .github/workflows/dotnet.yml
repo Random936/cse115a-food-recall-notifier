@@ -13,12 +13,12 @@ jobs:
     steps:
     
     - uses: actions/checkout@v4
-    - name: Setup .NET
+    - name: Install .NET 9
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 8.0.x
-    - name: Install Android workload
-      run: dotnet workload install android
+        dotnet-version: 9.0.x
+    - name: Install .NET MAUI Workload
+      run: dotnet workload install maui
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
