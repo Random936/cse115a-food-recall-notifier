@@ -17,6 +17,8 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 9.0.x
+    - name: Install .NET Workloads
+      run: dotnet workload restore
     - name: Build
       run: dotnet build --no-restore
     - name: Test
