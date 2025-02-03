@@ -5,7 +5,7 @@ name: .NET
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "Food-Recall-Notif-App" ]
   pull_request:
     branches: [ "main" ]
 
