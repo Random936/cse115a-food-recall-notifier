@@ -9,16 +9,15 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Repository
-          uses: actions/checkout@v4
+        uses: actions/checkout@v4
       - name: Setup .NET 9 SDK
-          uses: actions/setup-dotnet@v4
-          with: 
-            dotnet-version: 9.x
+        uses: actions/setup-dotnet@v4
+        with: 
+          dotnet-version: 9.x
       - name: Restore Dependencies
-          run: dotnet restore ./Food-Recall-Notif/Food-Recall-Notif.csproj
+        run: dotnet restore ./Food-Recall-Notif/Food-Recall-Notif.csproj
       - uses: actions/checkout@v4
       - name: Build
         run: dotnet build --no-restore
