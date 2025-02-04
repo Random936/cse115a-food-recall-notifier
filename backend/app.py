@@ -10,7 +10,9 @@ assert isinstance(database, Database)
 @app.route('/')
 def root_path():
     return json.dumps({"name": "FRN-Server",
-                       "version": "v0.1"})
+                       "version": "v0.1",
+                       "db_state": database.state(),
+                       "last_modified": database.last_modified()})
 
 
 @app.route('/query/<upc>')
