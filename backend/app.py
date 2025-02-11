@@ -3,7 +3,7 @@ from flask import Flask
 from database import Database, StaticDB
 
 app = Flask(__name__)
-database = StaticDB('/home/random/cse115a-food-recall-notifier/db.json')
+database = StaticDB('/usr/src/app/db.json')
 
 assert isinstance(database, Database)
 

@@ -40,5 +40,5 @@ for raw_product in res["data"]:
             "terminated": raw_product[6] == "Terminated"
         }
 
-with open('db.json', 'w+') as f:
+with open('../backend/db.json', 'w+') as f:
     json.dump(products, f)
