@@ -1,11 +1,17 @@
 import json
 from flask import Flask
-from database import Database, StaticDB
+from mongo_db import MongoDB
 
 app = Flask(__name__)
-database = StaticDB('/usr/src/app/db.json')
-
-assert isinstance(database, Database)
+database = MongoDB("localhost", 27017)
+SEARCHERS = {
+    "upc": None,
+    "date": None,
+    "brand": None,
+    "product_type": None,
+    "company": None,
+    "description": None
+}
 
 @app.route('/')
 def root_path():
@@ -25,6 +31,14 @@ def api_query(upc: str):
         return json.dumps({"error": "UPC not found"})
 
     return json.dumps(product)
+
+@app.route('/query/<searcher>/<term>')
+def api_search(searcher: str, term: str):
+    if not isinstance(field, str) or not isinstance(term, str):
+        return json.dumps({"error": "Invalid datatype received in REST API"})
+
+    #results = database.search(
+    raise NotImplementedError
 
 
 if __name__ == '__main__':

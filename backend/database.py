@@ -14,6 +14,6 @@ class Database:
     def update(self):
         raise NotImplementedError
 
-    def add(self, key, value):
+    def add(self, value):
         raise NotImplementedError
 
