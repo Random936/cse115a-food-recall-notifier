@@ -1,6 +1,6 @@
 import json
-from flask import Flask
-from mongo_db import MongoDB
+from flask import Flask, request
+from databases.mongo_db import MongoDB
 from config import MONGO_DB_HOST, MONGO_DB_PORT
 
 app = Flask(__name__)
@@ -8,6 +8,8 @@ database = MongoDB(MONGO_DB_HOST, MONGO_DB_PORT)
 
 @app.route('/')
 def root_path():
+    print(database.state())
+    print(database.last_modified())
     return json.dumps({"name": "FRN-Server",
                        "version": "v0.1",
                        "db_state": database.state(),
@@ -26,13 +28,22 @@ def api_query(upc: str):
     return json.dumps(product)
 
 
-@app.route('/query/<searcher>/<term>')
-def api_search(searcher: str, term: str):
+@app.route('/search/<field>/<term>')
+def api_search(field: str, term: str):
     if not isinstance(field, str) or not isinstance(term, str):
         return json.dumps({"error": "Invalid datatype received in REST API"})
 
-    #results = database.search(
-    raise NotImplementedError
+    offset = request.args.get('offset')
+    if offset is None:
+        offset = 0
+
+    count = request.args.get('count')
+    if count is None:
+        count = 10
+
+    print(offset, count)
+    results = database.search(field, term, offset, count)
+    return json.dumps(results)
 
 
 
