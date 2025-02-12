@@ -8,6 +8,18 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml"/>
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml"/>
+                <ResourceDictionary>
+                    <Color x:Key="Background">#F4F1DE</Color>
+                    <Color x:Key="Yellow">#F2CC8F</Color>
+                    <Color x:Key="Green">#81B29A</Color>
+                    <Color x:Key="Purple">#3D405B</Color>
+                    <Color x:Key="Red">#E07A5F</Color>
+                    <x:String x:Key="camera">&#xe2ad;</x:String>
+                    <x:String x:Key="apple_1">&#xe675;</x:String>
+                    <x:String x:Key="apple_2">&#xe674;</x:String>
+                    <x:String x:Key="medical_1">&#xf1ef;</x:String>
+                    <x:String x:Key="medical_2">&#xe201;</x:String>
+                </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

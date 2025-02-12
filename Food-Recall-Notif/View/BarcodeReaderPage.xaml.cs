@@ -1,4 +1,4 @@
-namespace Food_Recall_Notif
+namespace Food_Recall_Notif.View
 {
     public partial class BarcodeReaderPage : ContentPage
     {
