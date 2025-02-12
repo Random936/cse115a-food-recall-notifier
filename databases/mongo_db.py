@@ -19,7 +19,9 @@ class MongoDB(Database):
         return 0 if newest is None else newest['date_scraped']
 
     def query(self, key):
-        return self.recalls.find_one({"upc": key})
+        item = self.recalls.find_one({"upc": key})
+        del item["_id"]
+        return item
 
     def search(self, field, term, offset, count):
         assert offset >= 0 and count > 0
