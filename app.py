@@ -1,17 +1,10 @@
 import json
 from flask import Flask
 from mongo_db import MongoDB
+from config import MONGO_DB_HOST, MONGO_DB_PORT
 
 app = Flask(__name__)
-database = MongoDB("localhost", 27017)
-SEARCHERS = {
-    "upc": None,
-    "date": None,
-    "brand": None,
-    "product_type": None,
-    "company": None,
-    "description": None
-}
+database = MongoDB(MONGO_DB_HOST, MONGO_DB_PORT)
 
 @app.route('/')
 def root_path():
@@ -32,6 +25,7 @@ def api_query(upc: str):
 
     return json.dumps(product)
 
+
 @app.route('/query/<searcher>/<term>')
 def api_search(searcher: str, term: str):
     if not isinstance(field, str) or not isinstance(term, str):
@@ -39,6 +33,7 @@ def api_search(searcher: str, term: str):
 
     #results = database.search(
     raise NotImplementedError
+
 
 
 if __name__ == '__main__':

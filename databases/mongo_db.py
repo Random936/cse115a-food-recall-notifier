@@ -1,5 +1,6 @@
 import pymongo
 from database import Database
+from searchers import Searcher
 
 class MongoDB(Database):
     def __init__(self, host, port):
@@ -18,13 +19,14 @@ class MongoDB(Database):
         return 0 if newest is None else newest
 
     def query(self, key):
-        raise NotImplementedError
+        return self.recalls.find_one({"upc": key})
 
     def search(self, searcher, term):
+        assert isinstance(searcher, Searcher)
         raise NotImplementedError
 
     def update(self):
         raise NotImplementedError
 
     def add(self, value):
-        raise NotImplementedError
+        self.recalls.insert(value)
