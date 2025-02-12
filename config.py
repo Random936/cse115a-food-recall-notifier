@@ -1,2 +1,2 @@
-MONGO_DB_HOST = 'localhost'
+MONGO_DB_HOST = 'mongodb'
 MONGO_DB_PORT = 27017
