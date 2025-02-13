@@ -24,8 +24,10 @@ class MongoDB(Database):
         return item
 
     def search(self, field, term, offset, count):
+        assert isinstance(offset, int) and isinstance(count, int)
         assert offset >= 0 and count > 0
-        query = {field: term}
+
+        query = {field: {"$regex": term} }
         projection = {
             "_id": 0,
             "upc": 1,

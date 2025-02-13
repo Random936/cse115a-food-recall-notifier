@@ -36,12 +36,18 @@ def api_search(field: str, term: str):
     offset = request.args.get('offset')
     if offset is None:
         offset = 0
+    else:
+        offset = int(offset)
 
     count = request.args.get('count')
     if count is None:
         count = 10
+    else:
+        count = int(count)
 
-    print(offset, count)
+    if term == "all":
+        term = ""
+
     results = database.search(field, term, offset, count)
     return json.dumps(results)
 
