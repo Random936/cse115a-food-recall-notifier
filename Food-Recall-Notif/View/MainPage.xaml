@@ -3,29 +3,50 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Food_Recall_Notif.View.MainPage"
              BackgroundColor="{StaticResource Background}"
-             xmlns:model="clr-namespace:Food_Recall_Notif.Model">
-    <CollectionView>
-        <CollectionView.ItemsSource>
-            <x:Array Type="{x:Type model:Food_Item}">
-                <model:Food_Item
-                    Brand="Food1"
-                    Description="Description"/>
-                <model:Food_Item
-                    Brand="Food2"
-                    Description="Description"/>
-            </x:Array>
-        </CollectionView.ItemsSource>
-        <CollectionView.ItemTemplate>
-            <DataTemplate x:DataType="model:Food_Item">
-                <VerticalStackLayout Padding="10"
-                                     Spacing="10"
-                                     VerticalOptions="Center">
-                    <Label Text="{Binding Brand}"
-                           FontSize="24"/>
-                    <Label Text="{Binding Description}"
-                           FontSize="10"/>
-                </VerticalStackLayout>
-            </DataTemplate>
-        </CollectionView.ItemTemplate>
-    </CollectionView>
+             xmlns:model="clr-namespace:Food_Recall_Notif.Model"
+             xmlns:viewmodel="clr-namespace:Food_Recall_Notif.ViewModel"
+             x:DataType="viewmodel:FoodViewModel">
+
+    <Grid
+        ColumnDefinitions="*,*"
+        ColumnSpacing="5"
+        RowDefinitions="*,Auto"
+        RowSpacing="0">
+        <CollectionView
+            Grid.ColumnSpan="2"
+            ItemsSource="{Binding Food_Items}"
+            SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="model:Food_Item">
+                    <Grid Padding="10">
+                        <Border HeightRequest="125"
+                                Style="{StaticResource CardView}">
+                            <Grid Padding="0"
+                                  ColumnDefinitions="125,*">
+                                <VerticalStackLayout
+                                    VerticalOptions="Center"
+                                    Grid.Column="1"
+                                    Padding="10">
+                                    <Label Style="{StaticResource LargeLabel}"
+                                           Text="{Binding Brand}"/>
+                                    <Label Style="{StaticResource MediumLabel}"
+                                           Text="{Binding Date}"/>
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+
+        <ActivityIndicator IsVisible="{Binding IsBusy}"
+                           IsRunning="{Binding IsBusy}"
+                           HorizontalOptions="Fill"
+                           VerticalOptions="Center"
+                           Color="{StaticResource Primary}"
+                           Grid.RowSpan="2"
+                           Grid.ColumnSpan="2"/>
+    </Grid>
+
 </ContentPage>

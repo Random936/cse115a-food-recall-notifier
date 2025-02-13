@@ -9,6 +9,7 @@ public partial class MainPage : ContentPage
 		InitializeComponent();
 		BindingContext = viewModel;
 
+
 	}
 	private async void Button_CameraButtonClicked(object sender, System.EventArgs e)
 	{
@@ -28,5 +29,6 @@ public partial class MainPage : ContentPage
 		string searchQuery = searchBar.Text;
 		//TODO: search in db.json
 	}
+
 }
 

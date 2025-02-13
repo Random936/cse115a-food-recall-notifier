@@ -7,7 +7,7 @@ namespace Food_Recall_Notif.Model
     {
         [BsonId] // This is the unique identifier for MongoDB documents
         [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; }
+        public required string Id { get; set; }
 
         [BsonElement("date")] // Maps to the "date" field in the MongoDB document
         public DateTime Date { get; set; }
