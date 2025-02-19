@@ -11,8 +11,12 @@ class MongoDB(Database):
         self.database = self.client.get_database("recall-notifier")
         self.recalls = self.database.get_collection("recalls")
 
-    def state(self):
-        return self.database.command("dbhash")["md5"]
+    def newest(self, n):
+        newest = list(self.recalls.find({}, sort=[('timestamp', pymongo.DESCENDING)]).limit(n))
+        for n in newest:
+            del n["_id"]
+
+        return newest
 
     def last_modified(self):
         newest = self.recalls.find_one({}, sort=[('timestamp', pymongo.DESCENDING)])

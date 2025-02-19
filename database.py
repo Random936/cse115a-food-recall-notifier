@@ -1,5 +1,5 @@
 class Database:
-    def state(self):
+    def newest(self, n):
         raise NotImplementedError
 
     def last_modified(self):

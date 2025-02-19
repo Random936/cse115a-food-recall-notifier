@@ -8,11 +8,10 @@ database = MongoDB(MONGO_DB_HOST, MONGO_DB_PORT)
 
 @app.route('/')
 def root_path():
-    print(database.state())
-    print(database.last_modified())
+    print(database.newest(5))
     return json.dumps({"name": "FRN-Server",
                        "version": "v0.1",
-                       "db_state": database.state(),
+                       "db_state": database.newest(5),
                        "last_modified": database.last_modified()})
 
 
