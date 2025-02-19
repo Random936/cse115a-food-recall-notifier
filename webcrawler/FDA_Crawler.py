@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 import os
 import requests
 import json
+import re
 
 # load environment variables from .env file (see readme.md for more details)
 load_dotenv()
@@ -52,6 +53,42 @@ def save_recalls_to_json(api_key, output_file):    # Save info to json file
             first_entry = False
         f.write(']')
 
+def reformat_distribution_pattern(input):
+    state_abbr_to_name = {
+        "US": "Nationwide","nationwide":"Nationwide", 
+        "AL": "Alabama", "AK": "Alaska", "AZ": "Arizona", "AR": "Arkansas", "CA": "California",
+        "CO": "Colorado", "CT": "Connecticut", "DE": "Delaware", "FL": "Florida", "GA": "Georgia",
+        "HI": "Hawaii", "ID": "Idaho", "IL": "Illinois", "IN": "Indiana", "IA": "Iowa", 
+        "KS": "Kansas", "KY": "Kentucky", "LA": "Louisiana", "ME": "Maine", "MD": "Maryland", 
+        "MA": "Massachusetts", "MI": "Michigan", "MN": "Minnesota", "MS": "Mississippi", 
+        "MO": "Missouri", "MT": "Montana", "NE": "Nebraska", "NV": "Nevada", "NH": "New Hampshire", 
+        "NJ": "New Jersey", "NM": "New Mexico", "NY": "New York", "NC": "North Carolina", 
+        "ND": "North Dakota", "OH": "Ohio", "OK": "Oklahoma", "OR": "Oregon", "PA": "Pennsylvania", 
+        "RI": "Rhode Island", "SC": "South Carolina", "SD": "South Dakota", "TN": "Tennessee", 
+        "TX": "Texas", "UT": "Utah", "VT": "Vermont", "VA": "Virginia", "WA": "Washington", 
+        "WV": "West Virginia", "WI": "Wisconsin", "WY": "Wyoming"
+    }
+
+    state_name_list = list(state_abbr_to_name.values())
+
+    with open(input, "r") as file:
+        data = json.load(file) 
+
+    for record in data:
+        found_states = []
+        if "distribution_pattern" in record:
+            distribution_pattern = record["distribution_pattern"]
+            for abbr, name in state_abbr_to_name.items():
+                if re.search(rf"{abbr}", distribution_pattern):
+                    found_states.append(name)
+                if re.search(rf"{name}", distribution_pattern, re.IGNORECASE):
+                    found_states.append(name)
+
+            found_states = list(set(found_states))
+            record["distribution_pattern"] = found_states
+    with open("food_recalls_updated.json", "w") as file:
+        json.dump(data, file, indent=4)
+
 def main():
     if not api_key:
         print("You need to set the FDA_API_KEY environment variable. (See readme.md for more details)")
@@ -63,6 +100,9 @@ def main():
     # write to file
     save_recalls_to_json(api_key, output_file)
     print(f"Recall info has been save to {output_file}")
+    reformat_distribution_pattern(output_file)
+
+    
 
 if __name__ == "__main__":
     main()
