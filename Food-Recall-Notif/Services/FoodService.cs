@@ -1,18 +1,14 @@
-using System.Net.Http;
 using System.Net.Http.Json;
-using System.Text.Json;
-using Food_Recall_Notif.Model;
-
 namespace Food_Recall_Notif.Services
 {
     public class FoodService
     {
-        HttpClient httpClient;
+        readonly HttpClient httpClient;
         public FoodService()
         {
-            this.httpClient = new HttpClient();
+            httpClient = new HttpClient();
         }
-        List<Food_Item> foodlist;
+        public required List<Food_Item> foodlist;
         public async Task<List<Food_Item>?> GetAll()
         {
             if (foodlist?.Count > 0)
@@ -21,11 +17,41 @@ namespace Food_Recall_Notif.Services
             var response = await httpClient.GetAsync("https://notifier-api.randomctf.com/search/upc/all");
             if (response.IsSuccessStatusCode)
             {
-                foodlist = await response.Content.ReadFromJsonAsync<List<Food_Item>>() ?? new List<Food_Item>();
+                foodlist = await response.Content.ReadFromJsonAsync<List<Food_Item>>() ?? [];
 
             }
 
             return foodlist ?? [];
+        }
+
+        public async Task<UPC_Item?> GetUPCItem(string item)
+        {
+            if (string.IsNullOrWhiteSpace(item)) return null;
+
+            var response = await httpClient.GetAsync($"https://notifier-api.randomctf.com/query/{item}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<UPC_Item>();
+            }
+
+            return null;
+        }
+
+
+        public required List<Food_Item> searchResult;
+        public async Task<List<Food_Item>?> SearchUPC(string upc)
+        {
+            if (string.IsNullOrWhiteSpace(upc)) return null;
+
+            var response = await httpClient.GetAsync($"https://notifier-api.randomctf.com/search/brand/{upc}");
+            if (response.IsSuccessStatusCode)
+            {
+                searchResult = await response.Content.ReadFromJsonAsync<List<Food_Item>>() ?? [];
+
+            }
+
+            return searchResult; // Return null if the query fails
         }
     }
 }

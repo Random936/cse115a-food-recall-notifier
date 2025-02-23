@@ -26,6 +26,8 @@ class MauiProgram
 		builder.Services.AddSingleton<FoodService>();
 		builder.Services.AddSingleton<FoodViewModel>();
 		builder.Services.AddSingleton<MainPage>();
+		builder.Services.AddTransient<FoodDetailsViewModel>();
+		builder.Services.AddTransient<FoodDetailsPage>();
 
 #if DEBUG
 		builder.Logging.AddDebug();

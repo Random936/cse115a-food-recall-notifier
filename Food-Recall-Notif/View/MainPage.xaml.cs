@@ -17,18 +17,32 @@ public partial class MainPage : ContentPage
 		await Navigation.PushAsync(new BarcodeReaderPage());
 	}
 
-	private void SearchBar_TextChanged(object sender, TextChangedEventArgs e)
+	/*async void OnUploadImageClicked(object sender, EventArgs e)
 	{
-		// Search logic can be implemented here
-		// Example: Filter RecallItems based on search input
-	}
+		try
+		{
+			// Open file picker for image selection
+			var photo = await MediaPicker.PickPhotoAsync();
 
-	private void SearchBar_SearchButtonPressed(object sender, EventArgs e)
-	{
-		var searchBar = (SearchBar)sender;
-		string searchQuery = searchBar.Text;
-		//TODO: search in db.json
-	}
+			if (photo == null)
+				return;
+
+			// Load image into UI
+			uploadedImage.Source = ImageSource.FromFile(photo.FullPath);
+
+			// Decode UPC from image
+			string upcCode = await DecodeBarcodeFromImage(photo.FullPath);
+
+			if (!string.IsNullOrEmpty(upcCode))
+				barcodeResult.Text = "UPC Code: " + upcCode;
+			else
+				barcodeResult.Text = "No barcode found.";
+		}
+		catch (Exception ex)
+		{
+			await DisplayAlert("Error", ex.Message, "OK");
+		}
+	}*/
 
 }
 

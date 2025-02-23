@@ -1,5 +1,6 @@
+
 namespace Food_Recall_Notif.ViewModel;
-public partial class FoodViewModel : BaseViewModel
+public partial class FoodFinderView : BaseViewModel
 {
 
 }

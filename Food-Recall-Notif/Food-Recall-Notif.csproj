@@ -34,6 +34,7 @@
 
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">15.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
+		<MauiEnableXamlCBindingWithSourceCompilation>true</MauiEnableXamlCBindingWithSourceCompilation>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -60,8 +61,12 @@
 		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.22" />
     	<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.1" />
     	<PackageReference Include="MongoDB.Driver" Version="3.1.0" />
+    	<PackageReference Include="System.Linq" Version="4.3.0" />
     	<PackageReference Include="System.Text.Json" Version="9.0.1" />
     	<PackageReference Include="ZXing.Net.Maui.Controls" Version="0.4.0" />
+	</ItemGroup>
+	<ItemGroup>
+    	<MauiPermission Include="camera" />
 	</ItemGroup>
 
 </Project>
