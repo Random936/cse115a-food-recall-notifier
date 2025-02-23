@@ -2,31 +2,38 @@ using Food_Recall_Notif.Services;
 
 namespace Food_Recall_Notif.ViewModel;
 
-[QueryProperty(nameof(Food_Item), "Food_Item")]
-public partial class FoodDetailsViewModel(FoodService foodService) : BaseViewModel
+[QueryProperty("Upc", "upc")]
+public partial class FoodDetailsViewModel : BaseViewModel
 {
-    readonly FoodService foodService = foodService;
+    private readonly FoodService? foodService;
     [ObservableProperty]
-    public required Food_Item food_item;
+    public UPC_Item? upcItem;
     [ObservableProperty]
-    public required UPC_Item upc_item;
+    string upc;
 
-    partial void OnFood_itemChanged(Food_Item value)
+    public FoodDetailsViewModel(FoodService foodService)
     {
-        if (value?.upc is not null)
-        {
-            // Start loading details asynchronously
-            _ = LoadUpcItemDetailsAsync(value.upc);
-        }
+        this.foodService = foodService;
     }
+
     [RelayCommand]
-    async Task LoadUpcItemDetailsAsync(string upc)
+    public async Task LoadUpcItemDetailsAsync(string upc)
     {
         if (IsBusy) return;
+
         try
         {
             IsBusy = true;
-            UPC_Item? upc_item = await foodService.GetUPCItem(upc);
+            if (foodService == null)
+            {
+                return;
+            }
+            UpcItem = await foodService.GetUPCItem(upc);
+            if (UpcItem == null)
+            {
+                Debug.Write($"No UPC item found for {upc}\n");
+            }
+            Debug.Write(UpcItem);
         }
         catch (Exception ex)
         {
@@ -37,5 +44,4 @@ public partial class FoodDetailsViewModel(FoodService foodService) : BaseViewMod
             IsBusy = false;
         }
     }
-
 }

@@ -9,20 +9,8 @@ public partial class FoodViewModel : BaseViewModel
     // Observable Collections
     public ObservableCollection<Food_Item> DefaultResults { get; set; } = [];
     public ObservableCollection<Food_Item> BarcodeResults { get; } = [];
+    public ObservableCollection<Food_Item> SearchResults { get; } = [];
 
-    private readonly ObservableCollection<Food_Item> _defaultResults = [];
-    private readonly ObservableCollection<Food_Item> _searchResults = [];
-
-    private ObservableCollection<Food_Item> _sortedResults;
-    public ObservableCollection<Food_Item> SearchResults
-    {
-        get => _sortedResults;
-        set
-        {
-            _sortedResults = value;
-            OnPropertyChanged();
-        }
-    }
 
     // Visibility Properties
     [ObservableProperty]
@@ -36,28 +24,8 @@ public partial class FoodViewModel : BaseViewModel
 
     [ObservableProperty]
     private bool isBusy;
-
-    private string _selectedSortOption;
-    public string SelectedSortOption
-    {
-        get => _selectedSortOption;
-        set
-        {
-            if (_selectedSortOption != value)
-            {
-                _selectedSortOption = value;
-                try
-                {
-                    ApplySorting(IsSearchListVisible);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Sorting Error: {ex.Message}");
-                }
-                OnPropertyChanged();
-            }
-        }
-    }
+    [ObservableProperty]
+    string searchText;
 
     // Constructor
     public FoodViewModel(FoodService foodService)
@@ -77,10 +45,7 @@ public partial class FoodViewModel : BaseViewModel
     private async Task GoToDetails(Food_Item foodItem)
     {
         if (foodItem is null) return;
-
-        await Shell.Current.GoToAsync($"{nameof(View.FoodDetailsPage)}",
-            true,
-            new Dictionary<string, object> { { "Food_Item", foodItem } });
+        await Shell.Current.GoToAsync($"{nameof(View.FoodDetailsPage)}?upc={foodItem.upc}");
     }
 
     [RelayCommand]
@@ -115,10 +80,12 @@ public partial class FoodViewModel : BaseViewModel
     [RelayCommand]
     private async Task PerformSearch(string searchQuery)
     {
-        if (IsBusy) return;
 
+        if (IsBusy) return;
+        Debug.Write($"search query: {searchQuery}");
         if (string.IsNullOrWhiteSpace(searchQuery))
         {
+
             IsSearchListVisible = false;
             IsDefaultVisible = true;
             SearchResults.Clear();
@@ -132,18 +99,13 @@ public partial class FoodViewModel : BaseViewModel
             IsDefaultVisible = false;
 
             var searchResult = await foodService.SearchUPC(searchQuery) ?? [];
+            Debug.Write($"search results: {searchResult}");
+            SearchResults.Clear();
 
-            _searchResults.Clear();
-            if (searchResult == null)
-            {
-                IsSearchListVisible = false;
-                IsDefaultVisible = true;
-                return;
-            }
 
             foreach (var food in searchResult)
             {
-                _searchResults.Add(food);
+                SearchResults.Add(food);
             }
         }
         catch (Exception ex)
@@ -156,42 +118,5 @@ public partial class FoodViewModel : BaseViewModel
         }
     }
 
-    private void ApplySorting(bool isSearchView)
-    {
-        var targetList = isSearchView ? _searchResults : _defaultResults;
 
-        if (targetList == null || !targetList.Any())
-        {
-            if (isSearchView)
-                SearchResults = [];
-            else
-                DefaultResults = [];
-            return;
-        }
-
-        if (SelectedSortOption == "Brand (A-Z)")
-        {
-            SetSortedResults(isSearchView, targetList.OrderBy(item => item.brand));
-        }
-        else if (SelectedSortOption == "Brand (Z-A)")
-        {
-            SetSortedResults(isSearchView, targetList.OrderByDescending(item => item.brand));
-        }
-        else if (SelectedSortOption == "Newest First")
-        {
-            SetSortedResults(isSearchView, targetList.OrderByDescending(item => item.date));
-        }
-        else if (SelectedSortOption == "Oldest First")
-        {
-            SetSortedResults(isSearchView, targetList.OrderBy(item => item.date));
-        }
-    }
-
-    private void SetSortedResults(bool isSearchView, IEnumerable<Food_Item> sortedItems)
-    {
-        if (isSearchView)
-            SearchResults = [.. sortedItems];
-        else
-            DefaultResults = [.. sortedItems];
-    }
 }

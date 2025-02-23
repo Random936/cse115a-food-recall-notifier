@@ -5,7 +5,6 @@ namespace Food_Recall_Notif.View
         private readonly FoodViewModel viewModel;
         public BarcodeReaderPage()
         {
-
             InitializeComponent(); // Ensure this is called
             BindingContext = viewModel;
         }

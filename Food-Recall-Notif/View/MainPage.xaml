@@ -5,6 +5,7 @@
              BackgroundColor="{StaticResource Background}"
              xmlns:model="clr-namespace:Food_Recall_Notif.Model"
              xmlns:viewmodel="clr-namespace:Food_Recall_Notif.ViewModel"
+             x:DataType="viewmodel:FoodViewModel"
              xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
              ios:Page.UseSafeArea="True">
 
@@ -15,10 +16,10 @@
         <SearchBar Grid.Row="0"
                    Grid.ColumnSpan="3"
                    x:Name="searchBar"
-                   x:DataType="viewmodel:FoodViewModel"
                    Placeholder="Enter food item"
+                   Text="{Binding SearchText}"
                    SearchCommand="{Binding PerformSearchCommand}"
-                   SearchCommandParameter="{Binding Text, Source={x:Reference searchBar}}"
+                   SearchCommandParameter="{Binding SearchText}"
                    TextColor="white"/>
         <Button Grid.Row="1"
                 Grid.Column="0"
@@ -32,22 +33,7 @@
                 VerticalOptions="Center"
                 HorizontalOptions="Center"
                 Text="Upload Image"/>
-        <Picker Grid.Row="1"
-                Grid.Column="2"
-                x:Name="sortPicker"
-                Title="Sort By"
-                SelectedItem="{Binding SelectedSortOption, Mode=TwoWay}">
-            <Picker.ItemsSource>
-                <x:Array Type="{x:Type x:String}">
-                    <x:String>Brand (A-Z)</x:String>
-                    <x:String>Brand (Z-A)</x:String>
-                    <x:String>Newest First</x:String>
-                    <x:String>Oldest First</x:String>
-                </x:Array>
-            </Picker.ItemsSource>
-        </Picker>
         <CollectionView
-            x:DataType="viewmodel:FoodViewModel"
             Grid.Row="2"
             Grid.ColumnSpan="4"
             x:Name="SearchCollectionView"
@@ -59,6 +45,11 @@
                     <Grid Padding="10">
                         <Border HeightRequest="125"
                                 Style="{StaticResource CardView}">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:FoodViewModel}}, x:DataType=viewmodel:FoodViewModel, Path=GoToDetailsCommand}"
+                                    CommandParameter="{Binding .}"/>
+                            </Border.GestureRecognizers>
                             <Grid Padding="0"
                                   ColumnDefinitions="125,*">
                                 <VerticalStackLayout
@@ -75,25 +66,11 @@
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
-            <CollectionView.EmptyView>
-                <ContentView>
-                    <StackLayout HorizontalOptions="Center"
-                                 VerticalOptions="Center">
-                        <Label Text="No results matched your search."
-                               Margin="10,25,10,10"
-                               FontAttributes="Bold"
-                               FontSize="18"
-                               HorizontalOptions="Fill"
-                               HorizontalTextAlignment="Center"/>
-                    </StackLayout>
-                </ContentView>
-            </CollectionView.EmptyView>
         </CollectionView>
         <RefreshView Grid.Row="2"
                      Grid.ColumnSpan="3"
                      Command="{Binding GetFoodCommand}"
-                     IsRefreshing="{Binding IsRefreshing}"
-                     x:DataType="viewmodel:FoodViewModel">
+                     IsRefreshing="{Binding IsRefreshing}">
             <CollectionView
                 x:Name="DefaultCollectionView"
                 ItemsSource="{Binding DefaultResults}"

@@ -1,48 +1,81 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-    x:Class="Food_Recall_Notif.View.FoodDetailsPage"
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:model="clr-namespace:Food_Recall_Notif.Model"
-    xmlns:viewmodel="clr-namespace:Food_Recall_Notif.ViewModel"
-    Title="{Binding Upc_item.upc}"
-    x:DataType="viewmodel:FoodDetailsViewModel">
-    <ScrollView>
-        <Grid RowDefinitions="Auto,Auto,*">
-            <BoxView
-                BackgroundColor="{StaticResource Primary}"
-                Grid.RowSpan="2"
-                HorizontalOptions="Fill"
-                VerticalOptions="Fill"/>
+       x:Class="Food_Recall_Notif.View.FoodDetailsPage"
+       xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:model="clr-namespace:Food_Recall_Notif.Model"
+       xmlns:viewmodel="clr-namespace:Food_Recall_Notif.ViewModel"
+       Title="{Binding UpcItem.description}"
+       x:DataType="viewmodel:FoodDetailsViewModel">
 
-            <Border StrokeShape="RoundRectangle 80"
-                    Stroke="White"
-                    StrokeThickness="6"
-                    HeightRequest="172"
-                    WidthRequest="172"
-                    Margin="0,8,0,0"
-                    HorizontalOptions="Center"
-                    VerticalOptions="Center">
-            </Border>
+       <ScrollView>
+              <Grid Padding="10"
+                    RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,*">
+                     <!-- UPC -->
+                     <Label Style="{StaticResource LargeLabel}"
+                            Grid.Row="0"
+                            TextColor="{StaticResource Purple}"
+                            FontAttributes="Bold"
+                            Text="{Binding UpcItem.upc, StringFormat='UPC: {0}'}"
+                            HorizontalOptions="Start"
+                            Margin="0,8"/>
 
-            <Label Style="{StaticResource LargeLabel}"
-                   Grid.Row="1"
-                   TextColor="White"
-                   FontAttributes="Bold"
-                   Text="{Binding Upc_item.upc}"
-                   HorizontalOptions="Center"
-                   Margin="0,0,0,8"/>
+                     <!-- Date -->
+                     <Label Style="{StaticResource MediumLabel}"
+                            Grid.Row="1"
+                            TextColor="{StaticResource Purple}"
+                            Text="{Binding UpcItem.date, StringFormat='Date: {0:MM/dd/yyyy}'}"
+                            HorizontalOptions="Start"
+                            Margin="0,8"/>
 
-            <VerticalStackLayout Grid.Row="2"
-                                 Padding="10"
-                                 Spacing="10">
-                <Label Style="{StaticResource MediumLabel}"
-                       Text="{Binding Upc_item.date}"/>
-                <Label Style="{StaticResource SmallLabel}"
-                       Text="{Binding Upc_item.page, StringFormat='Page: {0}'}"/>
-                <Label Style="{StaticResource SmallLabel}"
-                       Text="{Binding Upc_item.recall_reason, StringFormat='Reason: {0}'}"/>
-            </VerticalStackLayout>
-        </Grid>
-    </ScrollView>
+                     <!-- Brand -->
+                     <Label Style="{StaticResource MediumLabel}"
+                            Grid.Row="3"
+                            TextColor="{StaticResource Purple}"
+                            Text="{Binding UpcItem.brand, StringFormat='Brand: {0}'}"
+                            HorizontalOptions="Start"
+                            Margin="0,8"/>
+
+                     <!-- Description -->
+                     <Label Style="{StaticResource MediumLabel}"
+                            Grid.Row="4"
+                            TextColor="{StaticResource Purple}"
+                            Text="{Binding UpcItem.description, StringFormat='Description: {0}'}"
+                            HorizontalOptions="Start"
+                            Margin="0,8"/>
+
+                     <!-- Product Type -->
+                     <Label Style="{StaticResource MediumLabel}"
+                            Grid.Row="5"
+                            TextColor="{StaticResource Purple}"
+                            Text="{Binding UpcItem.product_type, StringFormat='Product Type: {0}'}"
+                            HorizontalOptions="Start"
+                            Margin="0,8"/>
+
+                     <!-- Page -->
+                     <Label Style="{StaticResource MediumLabel}"
+                            Grid.Row="6"
+                            TextColor="{StaticResource Purple}"
+                            Text="{Binding UpcItem.page, StringFormat='Page: {0}'}"
+                            HorizontalOptions="Start"
+                            Margin="0,8"/>
+
+                     <!-- Recall Reason -->
+                     <Label Style="{StaticResource MediumLabel}"
+                            Grid.Row="7"
+                            TextColor="{StaticResource Purple}"
+                            Text="{Binding UpcItem.recall_reason, StringFormat='Recall Reason: {0}'}"
+                            HorizontalOptions="Start"
+                            Margin="0,8"/>
+
+                     <!-- Company -->
+                     <Label Style="{StaticResource MediumLabel}"
+                            Grid.Row="8"
+                            TextColor="{StaticResource Purple}"
+                            Text="{Binding UpcItem.company, StringFormat='Company: {0}'}"
+                            HorizontalOptions="Start"
+                            Margin="0,8"/>
+
+              </Grid>
+       </ScrollView>
 </ContentPage>

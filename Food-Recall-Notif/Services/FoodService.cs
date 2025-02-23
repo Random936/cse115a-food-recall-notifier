@@ -27,7 +27,6 @@ namespace Food_Recall_Notif.Services
         public async Task<UPC_Item?> GetUPCItem(string item)
         {
             if (string.IsNullOrWhiteSpace(item)) return null;
-
             var response = await httpClient.GetAsync($"https://notifier-api.randomctf.com/query/{item}");
 
             if (response.IsSuccessStatusCode)
@@ -40,11 +39,11 @@ namespace Food_Recall_Notif.Services
 
 
         public required List<Food_Item> searchResult;
-        public async Task<List<Food_Item>?> SearchUPC(string upc)
+        public async Task<List<Food_Item>?> SearchUPC(string item)
         {
-            if (string.IsNullOrWhiteSpace(upc)) return null;
+            if (string.IsNullOrWhiteSpace(item)) return null;
 
-            var response = await httpClient.GetAsync($"https://notifier-api.randomctf.com/search/brand/{upc}");
+            var response = await httpClient.GetAsync($"https://notifier-api.randomctf.com/search/brand/{item}");
             if (response.IsSuccessStatusCode)
             {
                 searchResult = await response.Content.ReadFromJsonAsync<List<Food_Item>>() ?? [];

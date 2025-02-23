@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+
 namespace Food_Recall_Notif.View;
 
 public partial class FoodDetailsPage : ContentPage
@@ -6,5 +8,24 @@ public partial class FoodDetailsPage : ContentPage
 	{
 		InitializeComponent();
 		BindingContext = viewModel;
+
 	}
+	protected async override void OnAppearing()
+	{
+		base.OnAppearing();
+
+		// Check if FoodItem has been set correctly
+		if (BindingContext is FoodDetailsViewModel viewModel)
+		{
+			if (viewModel.Upc != null)
+			{
+				await viewModel.LoadUpcItemDetailsAsync(viewModel.Upc);
+			}
+			else
+			{
+				Debug.WriteLine("Upc is null.");
+			}
+		}
+	}
+
 }
