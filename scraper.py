@@ -29,6 +29,28 @@ for raw_product in res["data"]:
         print(f"Failed to find UPC for {page}", file=sys.stderr)
         continue
 
+    # scraping states 
+    # us states
+    us_states = {
+        "Alabama": "AL", "Alaska": "AK", "Arizona": "AZ", "Arkansas": "AR", "California": "CA",
+        "Colorado": "CO", "Connecticut": "CT", "Delaware": "DE", "Florida": "FL", "Georgia": "GA",
+        "Hawaii": "HI", "Idaho": "ID", "Illinois": "IL", "Indiana": "IN", "Iowa": "IA",
+        "Kansas": "KS", "Kentucky": "KY", "Louisiana": "LA", "Maine": "ME", "Maryland": "MD",
+        "Massachusetts": "MA", "Michigan": "MI", "Minnesota": "MN", "Mississippi": "MS",
+        "Missouri": "MO", "Montana": "MT", "Nebraska": "NE", "Nevada": "NV", "New Hampshire": "NH",
+        "New Jersey": "NJ", "New Mexico": "NM", "New York": "NY", "North Carolina": "NC",
+        "North Dakota": "ND", "Ohio": "OH", "Oklahoma": "OK", "Oregon": "OR", "Pennsylvania": "PA",
+        "Rhode Island": "RI", "South Carolina": "SC", "South Dakota": "SD", "Tennessee": "TN",
+        "Texas": "TX", "Utah": "UT", "Vermont": "VT", "Virginia": "VA", "Washington": "WA",
+        "West Virginia": "WV", "Wisconsin": "WI", "Wyoming": "WY"
+    }
+
+    affected_us_states = []
+
+    for state, abbr in us_states.items():
+        if re.findall(r'\b{state}\b|\b{abbr}[,.\b]|\b{abbr}\b and', res.text):
+            affected_us_states.append(state)
+
     print(f"Found UPCs: {upcs} on page: {page}")
     for upc in set(upcs):
         if database.query(upc) is not None:
@@ -44,7 +66,8 @@ for raw_product in res["data"]:
             "product_type": raw_product[3],
             "recall_reason": raw_product[4],
             "company": raw_product[5],
-            "terminated": raw_product[6] == "Terminated"
+            "terminated": raw_product[6] == "Terminated",
+            "affected_us_states": affected_us_states
         }
         print(f"Adding new record with UPC: {upc}\n{entry}")
         database.add(entry)
