@@ -33,7 +33,6 @@ public partial class FoodDetailsViewModel : BaseViewModel
             {
                 Debug.Write($"No UPC item found for {upc}\n");
             }
-            Debug.Write(UpcItem);
         }
         catch (Exception ex)
         {

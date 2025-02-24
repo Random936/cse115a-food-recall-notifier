@@ -12,7 +12,7 @@
     <Grid
         ColumnDefinitions="*,*,*"
         ColumnSpacing="5"
-        RowDefinitions="1*, 1*, 10*">
+        RowDefinitions="1*, 1*, 10*, 1*">
         <SearchBar Grid.Row="0"
                    Grid.ColumnSpan="3"
                    x:Name="searchBar"
@@ -33,49 +33,14 @@
                 VerticalOptions="Center"
                 HorizontalOptions="Center"
                 Text="Upload Image"/>
-        <CollectionView
-            Grid.Row="2"
-            Grid.ColumnSpan="4"
-            x:Name="SearchCollectionView"
-            ItemsSource="{Binding SearchResults}"
-            SelectionMode="None"
-            IsVisible="{Binding IsSearchListVisible}">
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="model:Food_Item">
-                    <Grid Padding="10">
-                        <Border HeightRequest="125"
-                                Style="{StaticResource CardView}">
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:FoodViewModel}}, x:DataType=viewmodel:FoodViewModel, Path=GoToDetailsCommand}"
-                                    CommandParameter="{Binding .}"/>
-                            </Border.GestureRecognizers>
-                            <Grid Padding="0"
-                                  ColumnDefinitions="125,*">
-                                <VerticalStackLayout
-                                    VerticalOptions="Center"
-                                    Grid.Column="1"
-                                    Padding="10">
-                                    <Label Style="{StaticResource LargeLabel}"
-                                           Text="{Binding brand}"/>
-                                    <Label Style="{StaticResource MediumLabel}"
-                                           Text="{Binding date}"/>
-                                </VerticalStackLayout>
-                            </Grid>
-                        </Border>
-                    </Grid>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
         <RefreshView Grid.Row="2"
                      Grid.ColumnSpan="3"
                      Command="{Binding GetFoodCommand}"
                      IsRefreshing="{Binding IsRefreshing}">
             <CollectionView
                 x:Name="DefaultCollectionView"
-                ItemsSource="{Binding DefaultResults}"
-                SelectionMode="None"
-                IsVisible="{Binding IsDefaultVisible}">
+                ItemsSource="{Binding CurrentItems}"
+                SelectionMode="None">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="model:Food_Item">
                         <Grid Padding="10">
@@ -104,6 +69,13 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
         </RefreshView>
+        <Button Grid.Row="3"
+                Grid.Column="0"
+                Text="🏠"
+                VerticalOptions="Center"
+                HorizontalOptions="Center"
+                Clicked="HomeButtonClicked">
+        </Button>
     </Grid>
 
 </ContentPage>

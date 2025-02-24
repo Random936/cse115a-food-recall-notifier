@@ -8,16 +8,8 @@ public partial class FoodViewModel : BaseViewModel
 
     // Observable Collections
     public ObservableCollection<Food_Item> DefaultResults { get; set; } = [];
-    public ObservableCollection<Food_Item> BarcodeResults { get; } = [];
-    public ObservableCollection<Food_Item> SearchResults { get; } = [];
 
-
-    // Visibility Properties
-    [ObservableProperty]
-    private bool isDefaultVisible;
-
-    [ObservableProperty]
-    private bool isSearchListVisible;
+    public ObservableCollection<Food_Item> CurrentItems { get; set; } = [];
 
     [ObservableProperty]
     private bool isRefreshing;
@@ -30,14 +22,12 @@ public partial class FoodViewModel : BaseViewModel
     // Constructor
     public FoodViewModel(FoodService foodService)
     {
-        Title = "Food Finder";
         this.foodService = foodService;
         _ = InitializeAsync();
     }
 
     private async Task InitializeAsync()
     {
-        IsDefaultVisible = true;
         await GetFoodAsync();
     }
 
@@ -65,6 +55,12 @@ public partial class FoodViewModel : BaseViewModel
             {
                 DefaultResults.Add(food);
             }
+
+            CurrentItems.Clear();
+            foreach (var food in DefaultResults)
+            {
+                CurrentItems.Add(food);
+            }
         }
         catch (Exception ex)
         {
@@ -80,32 +76,28 @@ public partial class FoodViewModel : BaseViewModel
     [RelayCommand]
     private async Task PerformSearch(string searchQuery)
     {
-
+        Debug.WriteLine("search");
         if (IsBusy) return;
-        Debug.Write($"search query: {searchQuery}");
-        if (string.IsNullOrWhiteSpace(searchQuery))
-        {
-
-            IsSearchListVisible = false;
-            IsDefaultVisible = true;
-            SearchResults.Clear();
-            return;
-        }
-
         try
         {
-            IsBusy = true;
-            IsSearchListVisible = true;
-            IsDefaultVisible = false;
-
-            var searchResult = await foodService.SearchUPC(searchQuery) ?? [];
-            Debug.Write($"search results: {searchResult}");
-            SearchResults.Clear();
-
-
-            foreach (var food in searchResult)
+            if (string.IsNullOrWhiteSpace(searchQuery))
             {
-                SearchResults.Add(food);
+                CurrentItems.Clear();
+                foreach (var food in DefaultResults)
+                {
+                    CurrentItems.Add(food);
+                }
+            }
+            else
+            {
+                var searchResult = await foodService.SearchUPC(searchQuery) ?? [];
+
+                CurrentItems.Clear();
+
+                foreach (var food in searchResult)
+                {
+                    CurrentItems.Add(food);
+                }
             }
         }
         catch (Exception ex)

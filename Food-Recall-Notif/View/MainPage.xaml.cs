@@ -11,10 +11,34 @@ public partial class MainPage : ContentPage
 
 
 	}
-	private async void Button_CameraButtonClicked(object sender, System.EventArgs e)
+	private async void Button_CameraButtonClicked(object sender, EventArgs e)
 	{
 		// Navigate to the BarcodeReaderPage
 		await Navigation.PushAsync(new BarcodeReaderPage());
+	}
+	private void HomeButtonClicked(object sender, EventArgs e)
+	{
+		if (IsBusy) return;
+
+		try
+		{
+			IsBusy = true;
+
+			var viewModel = (FoodViewModel)BindingContext;
+			viewModel.CurrentItems.Clear();
+			foreach (var food in viewModel.DefaultResults)
+			{
+				viewModel.CurrentItems.Add(food);
+			}
+		}
+		catch (Exception ex)
+		{
+			Debug.WriteLine(ex);
+		}
+		finally
+		{
+			IsBusy = false;
+		}
 	}
 
 	/*async void OnUploadImageClicked(object sender, EventArgs e)
