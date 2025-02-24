@@ -32,6 +32,7 @@ for raw_product in res["data"]:
     # scraping states 
     # us states
     us_states = {
+        "Nationwide": "US", "Nationwide": "nationwide", 
         "Alabama": "AL", "Alaska": "AK", "Arizona": "AZ", "Arkansas": "AR", "California": "CA",
         "Colorado": "CO", "Connecticut": "CT", "Delaware": "DE", "Florida": "FL", "Georgia": "GA",
         "Hawaii": "HI", "Idaho": "ID", "Illinois": "IL", "Indiana": "IN", "Iowa": "IA",
