@@ -31,9 +31,9 @@ Format:
 
 
 Gets from dedicated website, and then deserializes JSON in the format of into a class called ServerStatus containing name, version, newest, and last_modified. The newest being the list of objects in the class of 
-RecallItem, containing status, product_description, reason_for_recall, and report_date. 
+Recall Item, containing status, product_description, reason_for_recall, and report_date. 
 
-Saves at default AppDataDirectory named "server_status.json".
+Saves a JSON file at default AppDataDirectory named "server_status.json".
 
 Once the app is opened, it takes the file, and compares it to the new data that is used from ClientAPI, basically a "get" but for the website.
 Then it takes the product_descriptions not in the old file, and uses it to make the notification content.
