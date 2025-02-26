@@ -16,6 +16,9 @@ namespace Food_Recall_Notif.Model
 
         [BsonElement("description")] // Maps to the "description" field in the MongoDB document
         public required string description { get; set; }
+        [BsonElement("product_type")] // Maps to the "description" field in the MongoDB document
+        public required string product_type { get; set; }
+        public List<string> ProductTypes => [.. product_type.Split(',').Select(p => p.Trim())];
     }
     public class UPC_Item
     {

@@ -10,9 +10,9 @@
              ios:Page.UseSafeArea="True">
 
     <Grid
-        ColumnDefinitions="*,*,*"
+        ColumnDefinitions="*,*"
         ColumnSpacing="5"
-        RowDefinitions="1*, 1*, 10*, 1*">
+        RowDefinitions="1*, 0.5*, 10*, 1*">
         <SearchBar Grid.Row="0"
                    Grid.ColumnSpan="3"
                    x:Name="searchBar"
@@ -33,14 +33,30 @@
                 VerticalOptions="Center"
                 HorizontalOptions="Center"
                 Text="Upload Image"/>
-        <RefreshView Grid.Row="2"
+        <Picker Grid.Row="2"
+                Grid.Column="3"
+                x:Name="sort"
+                Title="Sort by"
+                SelectedItem="{Binding SelectedSortOption, Mode=TwoWay}">
+            <Picker.ItemsSource>
+                <x:Array Type="{x:Type x:String}">
+                    <x:String>Brand A-Z</x:String>
+                    <x:String>Brand Z-A</x:String>
+                    <x:String>Newest-Oldest</x:String>
+                    <x:String>Oldest-Newest</x:String>
+                </x:Array>
+            </Picker.ItemsSource>
+        </Picker>
+        <RefreshView Grid.Row="3"
                      Grid.ColumnSpan="3"
                      Command="{Binding GetFoodCommand}"
                      IsRefreshing="{Binding IsRefreshing}">
             <CollectionView
                 x:Name="DefaultCollectionView"
                 ItemsSource="{Binding CurrentItems}"
-                SelectionMode="None">
+                SelectionMode="None"
+                RemainingItemsThreshold="2"
+                RemainingItemsThresholdReachedCommand="{Binding LoadMoreItemsCommand}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="model:Food_Item">
                         <Grid Padding="10">
@@ -58,8 +74,12 @@
                                         Grid.Column="1"
                                         Padding="10">
                                         <Label Style="{StaticResource LargeLabel}"
+                                               Text="{Binding upc}"/>
+                                        <Label Style="{StaticResource MediumLabel}"
                                                Text="{Binding brand}"/>
                                         <Label Style="{StaticResource MediumLabel}"
+                                               Text="{Binding description}"/>
+                                        <Label Style="{StaticResource SmallLabel}"
                                                Text="{Binding date}"/>
                                     </VerticalStackLayout>
                                 </Grid>
@@ -67,6 +87,19 @@
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
+                <CollectionView.EmptyView>
+                    <ContentView>
+                        <StackLayout HorizontalOptions="Center"
+                                     VerticalOptions="Center">
+                            <Label Text="No results matched your search."
+                                   Margin="10,25,10,10"
+                                   FontAttributes="Bold"
+                                   FontSize="18"
+                                   HorizontalOptions="Fill"
+                                   HorizontalTextAlignment="Center"/>
+                        </StackLayout>
+                    </ContentView>
+                </CollectionView.EmptyView>
             </CollectionView>
         </RefreshView>
         <Button Grid.Row="3"

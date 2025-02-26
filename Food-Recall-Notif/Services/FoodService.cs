@@ -9,12 +9,9 @@ namespace Food_Recall_Notif.Services
             httpClient = new HttpClient();
         }
         public required List<Food_Item> foodlist;
-        public async Task<List<Food_Item>?> GetAll()
+        public async Task<List<Food_Item>?> GetAll(int offset)
         {
-            if (foodlist?.Count > 0)
-                return foodlist;
-
-            var response = await httpClient.GetAsync("https://notifier-api.randomctf.com/search/upc/all");
+            var response = await httpClient.GetAsync($"https://notifier-api.randomctf.com/search/upc/all?offset={offset}&count=30");
             if (response.IsSuccessStatusCode)
             {
                 foodlist = await response.Content.ReadFromJsonAsync<List<Food_Item>>() ?? [];
@@ -39,11 +36,11 @@ namespace Food_Recall_Notif.Services
 
 
         public required List<Food_Item> searchResult;
-        public async Task<List<Food_Item>?> SearchUPC(string item)
+        public async Task<List<Food_Item>?> SearchUPC(string item, int offset)
         {
             if (string.IsNullOrWhiteSpace(item)) return null;
 
-            var response = await httpClient.GetAsync($"https://notifier-api.randomctf.com/search/brand/{item}");
+            var response = await httpClient.GetAsync($"https://notifier-api.randomctf.com/search/brand/{item}?offset={offset}&count=30");
             if (response.IsSuccessStatusCode)
             {
                 searchResult = await response.Content.ReadFromJsonAsync<List<Food_Item>>() ?? [];

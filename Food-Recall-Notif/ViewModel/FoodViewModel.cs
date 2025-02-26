@@ -16,14 +16,51 @@ public partial class FoodViewModel : BaseViewModel
 
     [ObservableProperty]
     private bool isBusy;
-    [ObservableProperty]
-    string searchText;
 
-    // Constructor
-    public FoodViewModel(FoodService foodService)
+    [ObservableProperty]
+    bool defaultView;
+    [ObservableProperty]
+    int defaultOffset;
+    [ObservableProperty]
+    int searchOffset;
+    private string _searchText = " ";
+
+    public string SearchText
+    {
+        get => _searchText;
+        set
+        {
+            if (_searchText != value)
+            {
+                _searchText = value;
+                OnPropertyChanged();
+                Task.Run(async () => await PerformSearch(_searchText));
+            }
+        }
+    }
+    private string _selectedSortOption;
+    public string SelectedSortOption
+    {
+        get => _selectedSortOption;
+        set
+        {
+            if (_selectedSortOption != value)
+            {
+                _selectedSortOption = value;
+                SortItems(_selectedSortOption);
+                OnPropertyChanged();
+            }
+        }
+    }
+    IConnectivity connectivity;
+    IGeolocation geolocation;
+
+    public FoodViewModel(FoodService foodService, IConnectivity connectivity, IGeolocation geolocation)
     {
         this.foodService = foodService;
         _ = InitializeAsync();
+        this.connectivity = connectivity;
+        this.geolocation = geolocation;
     }
 
     private async Task InitializeAsync()
@@ -35,6 +72,12 @@ public partial class FoodViewModel : BaseViewModel
     private async Task GoToDetails(Food_Item foodItem)
     {
         if (foodItem is null) return;
+        if (connectivity.NetworkAccess != NetworkAccess.Internet)
+        {
+            await Shell.Current.DisplayAlert("Could not connect to server!",
+                $"Please check internet and try again.", "OK");
+            return;
+        }
         await Shell.Current.GoToAsync($"{nameof(View.FoodDetailsPage)}?upc={foodItem.upc}");
     }
 
@@ -45,8 +88,15 @@ public partial class FoodViewModel : BaseViewModel
 
         try
         {
+            if (connectivity.NetworkAccess != NetworkAccess.Internet)
+            {
+                await Shell.Current.DisplayAlert("Could not connect to server!",
+                    $"Please check internet and try again.", "OK");
+                return;
+            }
             IsBusy = true;
-            var foodItems = await foodService.GetAll() ?? [];
+            DefaultOffset = 0;
+            var foodItems = await foodService.GetAll(DefaultOffset) ?? [];
 
             DefaultResults.Clear();
             if (foodItems == null) return;
@@ -61,6 +111,7 @@ public partial class FoodViewModel : BaseViewModel
             {
                 CurrentItems.Add(food);
             }
+            DefaultView = true;
         }
         catch (Exception ex)
         {
@@ -76,10 +127,16 @@ public partial class FoodViewModel : BaseViewModel
     [RelayCommand]
     private async Task PerformSearch(string searchQuery)
     {
-        Debug.WriteLine("search");
         if (IsBusy) return;
         try
         {
+            if (connectivity.NetworkAccess != NetworkAccess.Internet)
+            {
+                await Shell.Current.DisplayAlert("Could not connect to server!",
+                    $"Please check internet and try again.", "OK");
+                return;
+            }
+            SearchOffset = 0;
             if (string.IsNullOrWhiteSpace(searchQuery))
             {
                 CurrentItems.Clear();
@@ -87,10 +144,11 @@ public partial class FoodViewModel : BaseViewModel
                 {
                     CurrentItems.Add(food);
                 }
+                DefaultView = true;
             }
             else
             {
-                var searchResult = await foodService.SearchUPC(searchQuery) ?? [];
+                var searchResult = await foodService.SearchUPC(searchQuery, SearchOffset) ?? [];
 
                 CurrentItems.Clear();
 
@@ -98,6 +156,7 @@ public partial class FoodViewModel : BaseViewModel
                 {
                     CurrentItems.Add(food);
                 }
+                DefaultView = false;
             }
         }
         catch (Exception ex)
@@ -109,6 +168,95 @@ public partial class FoodViewModel : BaseViewModel
             IsBusy = false;
         }
     }
+    [RelayCommand]
+    private async Task LoadMoreItems()
+    {
 
+        if (DefaultView)
+        {
+            if (connectivity.NetworkAccess != NetworkAccess.Internet)
+            {
+                await Shell.Current.DisplayAlert("Could not connect to server!",
+                    $"Please check internet and try again.", "OK");
+                return;
+            }
+            Debug.WriteLine("Default View");
+            DefaultOffset += 30;
+            var foodItems = await foodService.GetAll(DefaultOffset) ?? [];
 
+            foreach (var food in foodItems)
+            {
+                CurrentItems.Add(food);
+                DefaultResults.Add(food);
+            }
+        }
+        else
+        {
+            Debug.WriteLine("Search View");
+            SearchOffset += 30;
+            var searchResult = await foodService.SearchUPC(SearchText, SearchOffset) ?? [];
+            foreach (var food in searchResult)
+            {
+                CurrentItems.Add(food);
+            }
+        }
+    }
+    public void SortItems(string selectedSort)
+    {
+        Debug.WriteLine(selectedSort);
+        if (string.IsNullOrEmpty(selectedSort)) return;
+
+        var sortedList = CurrentItems.ToList();
+
+        switch (selectedSort)
+        {
+            case "Brand A-Z":
+                sortedList = sortedList.OrderBy(f => f.brand).ToList();
+                break;
+            case "Brand Z-A":
+                sortedList = sortedList.OrderByDescending(f => f.brand).ToList();
+                break;
+            case "Newest-Oldest":
+                sortedList = sortedList.OrderByDescending(f => f.date).ToList();
+                break;
+            case "Oldest-Newest":
+                sortedList = sortedList.OrderBy(f => f.date).ToList();
+                break;
+        }
+
+        CurrentItems.Clear();
+        foreach (var item in sortedList)
+        {
+            CurrentItems.Add(item);
+        }
+    }
+    /*[RelayCommand]
+    async Task GetClosestRecalls()
+    {
+        if (IsBusy || CurrentItems.Count == 0)
+            return;
+
+        try
+        {
+            // Get cached location, else get real location.
+            var location = await geolocation.GetLastKnownLocationAsync() ?? await geolocation.GetLocationAsync(new GeolocationRequest
+                {
+                    DesiredAccuracy = GeolocationAccuracy.Medium,
+                    Timeout = TimeSpan.FromSeconds(30)
+                });
+
+            // Find closest monkey to us
+            var first = CurrentItems.OrderBy(m => location.CalculateDistance(
+                new Location(m.Latitude, m.Longitude), DistanceUnits.Miles));
+
+            await Shell.Current.DisplayAlert("", first.Name + " " +
+                first.Location, "OK");
+
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Unable to query location: {ex.Message}");
+            await Shell.Current.DisplayAlert("Error!", ex.Message, "OK");
+        }
+    }*/
 }

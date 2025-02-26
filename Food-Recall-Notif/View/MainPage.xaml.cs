@@ -1,14 +1,18 @@
-﻿using Food_Recall_Notif.ViewModel;
+﻿using System.Threading.Tasks;
+using Food_Recall_Notif.Services;
+using Food_Recall_Notif.ViewModel;
 
 namespace Food_Recall_Notif.View;
 
 public partial class MainPage : ContentPage
 {
-	public MainPage(FoodViewModel viewModel)
+	private readonly FoodService foodService;
+
+	public MainPage(FoodViewModel _viewModel, FoodService foodService)
 	{
 		InitializeComponent();
-		BindingContext = viewModel;
-
+		BindingContext = _viewModel;
+		this.foodService = foodService;
 
 	}
 	private async void Button_CameraButtonClicked(object sender, EventArgs e)
@@ -24,11 +28,11 @@ public partial class MainPage : ContentPage
 		{
 			IsBusy = true;
 
-			var viewModel = (FoodViewModel)BindingContext;
-			viewModel.CurrentItems.Clear();
-			foreach (var food in viewModel.DefaultResults)
+			var _viewModel = (FoodViewModel)BindingContext;
+			_viewModel.CurrentItems.Clear();
+			foreach (var food in _viewModel.DefaultResults)
 			{
-				viewModel.CurrentItems.Add(food);
+				_viewModel.CurrentItems.Add(food);
 			}
 		}
 		catch (Exception ex)
@@ -40,7 +44,6 @@ public partial class MainPage : ContentPage
 			IsBusy = false;
 		}
 	}
-
 	/*async void OnUploadImageClicked(object sender, EventArgs e)
 	{
 		try
