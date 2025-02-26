@@ -13,19 +13,19 @@ Food Recall Notifier will be created to notify users of any recalled food quickl
 
 * Required Features
 
-** TODO UPC Number Lookup
+** UPC Number Lookup
 
 The client most importantly must incorporate the ability to lookup a UPC number and return any recall information if it exists. This is the core functionality of the app.
 
-** TODO Barcode Scanner
+** Barcode Scanner
 
 The ability to scan a barcode using the phone's camera should be implemented to allow for the easy lookup of UPC numbers. Ideally this should be implemented on the client side to avoid unnecessary computation on the backend.
 
-** TODO Real Time Search
+** Real Time Search
 
 The IOS/Android application should provide a responsive search functionality such that when the search query is changed, the results are automatically updated to reflect the current search term. This will require the ability to search for partial UPC numbers on the backend.
 
-** TODO Display of Recalled Item
+** Display of Recalled Item
 
 This display should include:
 + The UPC Number
@@ -46,6 +46,8 @@ Users should be able to sort by date and category.
 There are two interfaces defined within the web scraper to logically separate crawling and parsing. The intention of adding a separation here is to allow for better modularity when incorporating more recall sources or crawling methods.
 
 *** Web Crawler
+
+Both functions should return a generator for the data being scraped.
 
 #+begin_src python
 class WebCrawler:
