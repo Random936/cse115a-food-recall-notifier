@@ -24,7 +24,9 @@ class MongoDB(Database):
 
     def query(self, key):
         item = self.recalls.find_one({"upc": key})
-        del item["_id"]
+        if item is not None:
+            del item["_id"]
+
         return item
 
     def search(self, field, term, offset, count):
