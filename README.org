@@ -49,20 +49,19 @@ There are two interfaces defined within the web scraper to logically separate cr
 
 #+begin_src python
 class WebCrawler:
-    def __init__(self):
+    def get_after(self, date):
         pass
 
-    # TODO
+    def get_all(self):
+        pass
 #+end_src
 
 *** Web Parser
 
 #+begin_src python
 class WebParser:
-    def __init__(self):
+    def parse(self, record):
         pass
-
-    # TODO
 #+end_src
 
 ** Database Interfaces
