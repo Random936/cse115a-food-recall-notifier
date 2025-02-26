@@ -2,15 +2,12 @@
 # Author: Size Liu
 
 from datetime import datetime
-from dotenv import load_dotenv
-import os
 import requests
 import json
 
-load_dotenv()
-api_key = os.getenv("FDA_API_KEY")
+from crawlers.webcrawler import WebCrawler
 
-class WebCrawler():
+class FDAWebCrawler(WebCrawler):
     def __init__(api_key, limit=100):
         base_url = "https://api.fda.gov/food/enforcement.json"
         skip = 0
