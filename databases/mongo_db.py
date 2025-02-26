@@ -22,11 +22,11 @@ class MongoDB(Database):
         return newest
 
     def last_modified(self):
-        newest = self.recalls.find_one({}, sort=[('timestamp', pymongo.DESCENDING)])
-        return 0 if newest is None else newest.get('date_scraped', 0)
+        newest = self.recalls.find_one({"recall_initiation_date": {"$exists": True } }, sort=[('recall_initiation_date', pymongo.DESCENDING)])
+        return 0 if newest is None else newest.get('recall_initiation_date', 0)
 
     def query(self, key):
-        item = self.recalls.find_one({"upc": key})
+        item = self.recalls.find_one({"recall_number": key})
         if item is not None:
             del item["_id"]
 
@@ -39,7 +39,7 @@ class MongoDB(Database):
         query = {field: {"$regex": term} }
         projection = {
             "_id": 0,
-            "upc": 1,
+            "recall_number": 1,
             "date": 1,
             "brand": 1,
             "product_type": 1,
@@ -65,9 +65,13 @@ class MongoDB(Database):
 
         results = None
         if self.last_modified() == 0:
+            print("No database data detected. Populating database.")
             results = webcrawler.get_all()
         else:
-            results = webcrawler.get_from(datetime.fromisoformat(self.last_modified()))
+            print(f"Updating database. Latest recall in database: {self.last_modified()}")
+            date = datetime.strptime(self.last_modified(), "%Y%m%d")
+            print(f"debug: {date}")
+            results = webcrawler.get_after(date)
 
         for result in results:
             for parser in parsers:
@@ -76,4 +80,7 @@ class MongoDB(Database):
             self.add(result)
 
     def add(self, value):
+        if "recall_number" not in value or self.query(value["recall_number"]) is not None:
+            return
+
         self.recalls.insert_one(value)

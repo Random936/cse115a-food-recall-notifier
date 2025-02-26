@@ -29,6 +29,7 @@ class FDAWebCrawler(WebCrawler):
             }
 
             try:
+                print(f"FDA API Request: {BASE_URL} {params}")
                 response = requests.get(BASE_URL, params=params, stream=True)
                 response.raise_for_status()  # Check if the request was successful
                 data = response.json()
@@ -38,7 +39,8 @@ class FDAWebCrawler(WebCrawler):
 
                 for result in results:
                     yield result
-                    self.skip += self.limit
+
+                self.skip += self.limit
 
             except requests.RequestException as e:
                 print(f"There's error in request: {e}")
@@ -51,18 +53,3 @@ class FDAWebCrawler(WebCrawler):
         # Theoretically there shouldn't be recalls with an epoch timestamp before 0.
         # Either way not relevant now.
         return self.get_after(datetime.fromtimestamp(0))
-
-#def save_recalls_to_mongodb(api_key, output_file):    # Save info to json file
-#    database = MongoDB(MONGO_DB_HOST, MONGO_DB_PORT)
-#    recalls = WebCrawler(api_key=api_key)
-#
-#    for recall in recalls:
-#        if "recall_number" not in recall:
-#            print("Recall record does not contain a recall number. Malformed.")
-#            continue
-#        if database.query(recall["recall_number"]) is not None:
-#            print("Recall record already in database.")
-#            continue
-#
-#    assert "date_scraped" in entry
-#    database.add(entry)

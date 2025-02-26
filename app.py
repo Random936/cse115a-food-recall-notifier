@@ -10,7 +10,7 @@ load_dotenv()
 app = Flask(__name__)
 
 database = MongoDB(MONGO_DB_HOST, MONGO_DB_PORT)
-database.update(FDAWebCrawler(os.getenv("FDA_API_KEY")), [])
+database.update(FDAWebCrawler(os.getenv("FDA_API_KEY"), limit=1000), [])
 
 @app.route('/')
 def root_path():
