@@ -1,6 +1,9 @@
 import pymongo
 from database import Database
 from collections import defaultdict
+from datetime import datetime
+from crawlers.webcrawler import WebCrawler
+from parsers.webparser import WebParser
 
 class MongoDB(Database):
     def __init__(self, host, port):
@@ -50,8 +53,21 @@ class MongoDB(Database):
         print(results)
         return results
 
-    def update(self, webcrawler):
-        webcrawler
+    def update(self, webcrawler, parsers):
+        assert isinstance(webcrawler, WebCrawler)
+        assert all([isinstance(p, WebParser) for p in parsers])
+
+        results = None
+        if self.last_modified() == 0:
+            results = webcrawler.get_all()
+        else:
+            results = webcrawler.get_from(datetime.fromisoformat(self.last_modified()))
+
+        for result in results:
+            for parser in parsers:
+                result = parser.parse(result)
+
+            self.add(result)
 
     def add(self, value):
         self.recalls.insert_one(value)
