@@ -28633,11 +28633,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Kenshin\\Source\\Repos\\cse115a-food-recall-notifier\\MauiApp1\\MauiApp1.csproj",
+      "projectUniqueName": "C:\\Users\\Kenshin\\Documents\\GitHub\\cse115a-food-recall-notifier\\MauiApp1\\MauiApp1.csproj",
       "projectName": "MauiApp1",
-      "projectPath": "C:\\Users\\Kenshin\\Source\\Repos\\cse115a-food-recall-notifier\\MauiApp1\\MauiApp1.csproj",
+      "projectPath": "C:\\Users\\Kenshin\\Documents\\GitHub\\cse115a-food-recall-notifier\\MauiApp1\\MauiApp1.csproj",
       "packagesPath": "C:\\Users\\Kenshin\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Kenshin\\Source\\Repos\\cse115a-food-recall-notifier\\MauiApp1\\obj\\",
+      "outputPath": "C:\\Users\\Kenshin\\Documents\\GitHub\\cse115a-food-recall-notifier\\MauiApp1\\obj\\",
       "projectStyle": "PackageReference",
       "crossTargeting": true,
       "fallbackFolders": [

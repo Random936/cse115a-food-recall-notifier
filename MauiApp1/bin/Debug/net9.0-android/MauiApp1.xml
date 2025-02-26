@@ -4,6 +4,11 @@
         <name>MauiApp1</name>
     </assembly>
     <members>
+        <member name="M:MauiApp1.MainPage.SendNotification(System.String,System.String,System.String)">
+            <summary>
+            Sends a local notification when new recalls are detected.
+            </summary>
+        </member>
         <member name="T:MauiApp1.Resource">
             <summary>
             Android Resource Designer class.

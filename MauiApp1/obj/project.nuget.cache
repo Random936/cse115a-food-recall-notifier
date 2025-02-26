@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "+zqH7LiXqGw=",
+  "dgSpecHash": "PP8KiKGW4P4=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Kenshin\\Source\\Repos\\cse115a-food-recall-notifier\\MauiApp1\\MauiApp1.csproj",
+  "projectFilePath": "C:\\Users\\Kenshin\\Documents\\GitHub\\cse115a-food-recall-notifier\\MauiApp1\\MauiApp1.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Kenshin\\.nuget\\packages\\googlegson\\2.11.0.3\\googlegson.2.11.0.3.nupkg.sha512",
     "C:\\Users\\Kenshin\\.nuget\\packages\\microsoft.extensions.configuration\\9.0.0\\microsoft.extensions.configuration.9.0.0.nupkg.sha512",
