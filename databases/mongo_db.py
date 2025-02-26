@@ -55,8 +55,8 @@ class MongoDB(Database):
         print(results)
         return results
 
-    def update(self):
-        raise NotImplementedError
+    def update(self, webcrawler):
+        webcrawler
 
     def add(self, value):
         self.recalls.insert_one(value)

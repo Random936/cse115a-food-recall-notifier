@@ -5,6 +5,7 @@
       py.flask
       py.requests
       py.pymongo
+      py.python-dotenv
     ]))
   ];
 }

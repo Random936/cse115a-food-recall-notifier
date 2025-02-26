@@ -5,6 +5,9 @@ from dotenv import load_dotenv
 import os
 import requests
 import json
+from databases.mongo_db import MongoDB
+from config import MONGO_DB_HOST, MONGO_DB_PORT
+from datetime import datetime, timezone
 
 # load environment variables from .env file (see readme.md for more details)
 load_dotenv()
@@ -29,8 +32,11 @@ def WebCrawler(api_key, limit=100): # Fetch all food recalls from FDA API (Sorte
             results = data.get('results', [])
             if not results:
                 break
+
             for result in results:
+                result["date_scraped"] = datetime.now(tz=timezone.utc).isoformat(timespec='seconds')
                 yield result
+
             skip += limit
         except requests.RequestException as e:
             print(f"There's error in request: {e}")
@@ -43,14 +49,22 @@ def save_recalls_to_json(api_key, output_file):    # Save info to json file
     recalls = WebCrawler(api_key=api_key)
 
     with open(output_file, 'w', encoding='utf-8') as f:
-        f.write('[')
-        first_entry = True
-        for recall in recalls:
-            if not first_entry:
-                f.write(',\n')
-            json.dump(recall, f, ensure_ascii=False, indent=4)
-            first_entry = False
-        f.write(']')
+        json.dump(recalls, f, ensure_ascii=False, indent=4)
+
+def save_recalls_to_mongodb(api_key, output_file):    # Save info to json file
+    database = MongoDB(MONGO_DB_HOST, MONGO_DB_PORT)
+    recalls = WebCrawler(api_key=api_key)
+
+    for recall in recalls:
+        if "recall_number" not in recall:
+            print("Recall record does not contain a recall number. Malformed.")
+            continue
+        if database.query(recall["recall_number"]) is not None:
+            print("Recall record already in database.")
+            continue
+
+    assert "date_scraped" in entry
+    database.add(entry)
 
 def main():
     if not api_key:
