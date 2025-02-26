@@ -33,6 +33,7 @@ class MongoDB(Database):
             "upc": 1,
             "date": 1,
             "brand": 1,
+            "product_type": 1,
             "description": 1
         }
 
