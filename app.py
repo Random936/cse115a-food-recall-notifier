@@ -17,7 +17,7 @@ def root_path():
     print(database.newest(5))
     return json.dumps({"name": "FRN-Server",
                        "version": "v0.1",
-                       "db_state": database.newest(5),
+                       "newest": database.newest(5),
                        "last_modified": database.last_modified()})
 
 
