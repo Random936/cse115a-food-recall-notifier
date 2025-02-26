@@ -23,7 +23,7 @@ class MongoDB(Database):
 
     def last_modified(self):
         newest = self.recalls.find_one({}, sort=[('timestamp', pymongo.DESCENDING)])
-        return 0 if newest is None else newest['date_scraped']
+        return 0 if newest is None else newest.get('date_scraped', 0)
 
     def query(self, key):
         item = self.recalls.find_one({"upc": key})

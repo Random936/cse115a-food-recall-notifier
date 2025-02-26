@@ -7,10 +7,13 @@ import json
 
 from crawlers.webcrawler import WebCrawler
 
+BASE_URL = "https://api.fda.gov/food/enforcement.json"
+
 class FDAWebCrawler(WebCrawler):
-    def __init__(api_key, limit=100):
-        base_url = "https://api.fda.gov/food/enforcement.json"
-        skip = 0
+    def __init__(self, api_key, limit=100):
+        self.api_key = api_key
+        self.limit = limit
+        self.skip = 0
 
     def get_after(self, date):
         assert isinstance(date, datetime)
@@ -19,14 +22,14 @@ class FDAWebCrawler(WebCrawler):
             lower_date = date.strftime("%Y%m%d")
             upper_date = datetime.now().strftime("%Y%m%d")
             params = {
-                'api_key': api_key,
-                'limit': limit,
-                'skip': skip,
+                'api_key': self.api_key,
+                'limit': self.limit,
+                'skip': self.skip,
                 'sort': f'report_date:desc[{lower_date}+TO+{upper_date}]' # Sort by report_date in ascending order (change desc to asc to sort in ascending order)
             }
 
             try:
-                response = requests.get(base_url, params=params, stream=True)
+                response = requests.get(BASE_URL, params=params, stream=True)
                 response.raise_for_status()  # Check if the request was successful
                 data = response.json()
                 results = data.get('results', [])
@@ -35,7 +38,7 @@ class FDAWebCrawler(WebCrawler):
 
                 for result in results:
                     yield result
-                    skip += limit
+                    self.skip += self.limit
 
             except requests.RequestException as e:
                 print(f"There's error in request: {e}")
