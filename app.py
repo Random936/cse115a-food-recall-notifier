@@ -1,4 +1,5 @@
 import os
+import re
 import json
 from dotenv import load_dotenv
 from flask import Flask, request
@@ -21,14 +22,14 @@ def root_path():
                        "last_modified": database.last_modified()})
 
 
-@app.route('/query/<upc>')
-def api_query(upc: str):
-    if not upc.isdigit() or not int(upc) >= 0:
-        return json.dumps({"error": "Invalid UPC provided"})
+@app.route('/query/<recall>')
+def api_query(recall: str):
+    if not re.fullmatch(r'[fF]-\d+-\d+', recall):
+        return json.dumps({"error": "Invalid recall number provided"})
 
-    product = database.query(upc)
+    product = database.query(recall.upper())
     if product is None:
-        return json.dumps({"error": "UPC not found"})
+        return json.dumps({"error": "Recall number not found"})
 
     return json.dumps(product)
 

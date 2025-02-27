@@ -3,6 +3,7 @@
 
 from datetime import datetime
 import requests
+import urllib
 import json
 
 from crawlers.webcrawler import WebCrawler
@@ -25,15 +26,19 @@ class FDAWebCrawler(WebCrawler):
                 'api_key': self.api_key,
                 'limit': self.limit,
                 'skip': self.skip,
-                'sort': f'report_date:desc[{lower_date}+TO+{upper_date}]' # Sort by report_date in ascending order (change desc to asc to sort in ascending order)
+                'sort': 'report_date:desc',
+                'search': f'report_date[{lower_date}+TO+{upper_date}]'
             }
 
             try:
-                print(f"FDA API Request: {BASE_URL} {params}")
-                response = requests.get(BASE_URL, params=params, stream=True)
+                payload_str = urllib.parse.urlencode(params, safe=':+[]')
+                print(f"Making request: {BASE_URL}?{payload_str}")
+
+                response = requests.get(BASE_URL, params=payload_str, stream=True)
                 response.raise_for_status()  # Check if the request was successful
                 data = response.json()
                 results = data.get('results', [])
+
                 if not results:
                     break
 
