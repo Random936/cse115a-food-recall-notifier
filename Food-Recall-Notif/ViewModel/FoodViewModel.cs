@@ -4,25 +4,29 @@ namespace Food_Recall_Notif.ViewModel;
 
 public partial class FoodViewModel : BaseViewModel
 {
+    // FoodService to interact with the data layer for food recall information
     private readonly FoodService foodService;
 
-    // Observable Collections
+    // Observable collections to hold food items and search results
     public ObservableCollection<Food_Item> DefaultResults { get; set; } = [];
-
     public ObservableCollection<Food_Item> CurrentItems { get; set; } = [];
 
+    // Properties to manage UI states like refreshing and busy indicators
     [ObservableProperty]
     private bool isRefreshing;
 
     [ObservableProperty]
     private bool isBusy;
 
+    // Properties to manage view state (default view) and pagination offsets
     [ObservableProperty]
     bool defaultView;
     [ObservableProperty]
     int defaultOffset;
     [ObservableProperty]
     int searchOffset;
+
+    // Backing field for SearchText, used in search functionality
     private string _searchText = " ";
 
     public string SearchText
@@ -30,6 +34,7 @@ public partial class FoodViewModel : BaseViewModel
         get => _searchText;
         set
         {
+            // Update search text and trigger property change notification
             if (_searchText != value)
             {
                 _searchText = value;
@@ -37,12 +42,15 @@ public partial class FoodViewModel : BaseViewModel
             }
         }
     }
+
+    // Property for selected sort option used to sort the food items
     private string _selectedSortOption;
     public string SelectedSortOption
     {
         get => _selectedSortOption;
         set
         {
+            // Update the selected sort option and trigger sorting of items
             if (_selectedSortOption != value)
             {
                 _selectedSortOption = value;
@@ -51,53 +59,70 @@ public partial class FoodViewModel : BaseViewModel
             }
         }
     }
+
+    // Dependencies for connectivity and geolocation services
     IConnectivity connectivity;
     IGeolocation geolocation;
 
+    // Constructor to initialize services and begin data retrieval
     public FoodViewModel(FoodService foodService, IConnectivity connectivity, IGeolocation geolocation)
     {
         this.foodService = foodService;
         this.connectivity = connectivity;
         this.geolocation = geolocation;
-        _ = InitializeAsync();
 
+        // Begin initialization process asynchronously
+        _ = InitializeAsync();
     }
 
+    // Asynchronous method to initialize data by fetching food items
     private async Task InitializeAsync()
     {
         await GetFoodAsync();
     }
 
+    // Command to navigate to the details page for a selected food item
     [RelayCommand]
     private async Task GoToDetails(Food_Item foodItem)
     {
+        // Return if no food item is selected
         if (foodItem is null) return;
+
+        // Check for internet connectivity before navigating
         if (connectivity.NetworkAccess != NetworkAccess.Internet)
         {
-            await Shell.Current.DisplayAlert("Could not connect to server!",
-                $"Please check internet and try again.", "OK");
+            await Shell.Current.DisplayAlert("Could not connect to server!", "Please check internet and try again.", "OK");
             return;
         }
+
+        // Navigate to the food details page with the selected food item recall number
         await Shell.Current.GoToAsync($"{nameof(View.FoodDetailsPage)}?recall_number={foodItem.recall_number}");
     }
 
+    // Command to retrieve food items from the service asynchronously
     [RelayCommand]
     private async Task GetFoodAsync()
     {
+        // Prevent simultaneous execution of the method
         if (IsBusy) return;
 
         try
         {
+            // Check for network connectivity before attempting to retrieve data
             if (connectivity.NetworkAccess != NetworkAccess.Internet)
             {
-                await Shell.Current.DisplayAlert("Could not connect to server!",
-                    $"Please check internet and try again.", "OK");
+                await Shell.Current.DisplayAlert("Could not connect to server!", "Please check internet and try again.", "OK");
                 return;
             }
+
+            // Set busy state and reset offset for default food items
             IsBusy = true;
             DefaultOffset = 0;
+
+            // Retrieve the list of food items from the service
             var foodItems = await foodService.GetAll(DefaultOffset) ?? [];
 
+            // Clear previous food items and add the new ones
             DefaultResults.Clear();
             if (foodItems == null) return;
 
@@ -106,11 +131,14 @@ public partial class FoodViewModel : BaseViewModel
                 DefaultResults.Add(food);
             }
 
+            // Clear current items and populate with the fetched food items
             CurrentItems.Clear();
             foreach (var food in DefaultResults)
             {
                 CurrentItems.Add(food);
             }
+
+            // Set default view flag to true
             DefaultView = true;
         }
         catch (Exception ex)
@@ -119,24 +147,32 @@ public partial class FoodViewModel : BaseViewModel
         }
         finally
         {
+            // Reset busy and refreshing states after the operation
             IsBusy = false;
             IsRefreshing = false;
         }
     }
 
+    // Command to perform a search for food items based on the search query
     [RelayCommand]
     private async Task PerformSearch(string searchQuery)
     {
+        // Prevent simultaneous execution of the method
         if (IsBusy) return;
+
         try
         {
+            // Check for network connectivity before attempting to retrieve search results
             if (connectivity.NetworkAccess != NetworkAccess.Internet)
             {
-                await Shell.Current.DisplayAlert("Could not connect to server!",
-                    $"Please check internet and try again.", "OK");
+                await Shell.Current.DisplayAlert("Could not connect to server!", "Please check internet and try again.", "OK");
                 return;
             }
+
+            // Reset search offset
             SearchOffset = 0;
+
+            // If the search query is empty, display all food items
             if (string.IsNullOrWhiteSpace(searchQuery))
             {
                 CurrentItems.Clear();
@@ -148,8 +184,8 @@ public partial class FoodViewModel : BaseViewModel
             }
             else
             {
+                // Perform search using the query and update the current items collection
                 var searchResult = await foodService.SearchUPC(searchQuery, SearchOffset) ?? [];
-
                 CurrentItems.Clear();
 
                 foreach (var food in searchResult)
@@ -165,22 +201,28 @@ public partial class FoodViewModel : BaseViewModel
         }
         finally
         {
+            // Reset the busy state after the search operation
             IsBusy = false;
         }
     }
+
+    // Command to load more items either from the default or search view
     [RelayCommand]
     private async Task LoadMoreItems()
     {
-
+        // Check if the default view is active
         if (DefaultView)
         {
+            // Check for network connectivity before loading more food items
             if (connectivity.NetworkAccess != NetworkAccess.Internet)
             {
-                await Shell.Current.DisplayAlert("Could not connect to server!",
-                    $"Please check internet and try again.", "OK");
+                await Shell.Current.DisplayAlert("Could not connect to server!", "Please check internet and try again.", "OK");
                 return;
             }
+
             Debug.WriteLine("Default View");
+
+            // Increase the offset and fetch additional food items
             DefaultOffset += 30;
             var foodItems = await foodService.GetAll(DefaultOffset) ?? [];
 
@@ -193,22 +235,28 @@ public partial class FoodViewModel : BaseViewModel
         else
         {
             Debug.WriteLine("Search View");
+
+            // Increase the search offset and fetch more search results
             SearchOffset += 30;
             var searchResult = await foodService.SearchUPC(SearchText, SearchOffset) ?? [];
+
             foreach (var food in searchResult)
             {
                 CurrentItems.Add(food);
             }
         }
     }
-    //FIX!!!!
+
+    // Method to sort the current items based on the selected sort option
     public void SortItems(string selectedSort)
     {
-        Debug.WriteLine(selectedSort);
+        // Return if the sort option is empty
         if (string.IsNullOrEmpty(selectedSort)) return;
 
+        // Create a copy of the current items list for sorting
         var sortedList = CurrentItems.ToList();
 
+        // Sort the items based on the selected sort option
         switch (selectedSort)
         {
             case "Brand A-Z":
@@ -225,14 +273,16 @@ public partial class FoodViewModel : BaseViewModel
                 break;
         }
 
+        // Update the current items collection with the sorted list
         CurrentItems.Clear();
         foreach (var item in sortedList)
         {
             CurrentItems.Add(item);
         }
     }
+    /*
     [RelayCommand]
-    /*async Task GetClosestRecalls()
+    async Task GetClosestRecalls()
     {
         if (IsBusy || CurrentItems.Count == 0)
             return;
