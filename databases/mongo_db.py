@@ -15,7 +15,7 @@ class MongoDB(Database):
         self.recalls = self.database.get_collection("recalls")
 
     def newest(self, n):
-        newest = list(self.recalls.find({}, sort=[('timestamp', pymongo.DESCENDING)]).limit(n))
+        newest = list(self.recalls.find({}, sort=[('report_date', pymongo.DESCENDING)]).limit(n))
         for n in newest:
             del n["_id"]
 
