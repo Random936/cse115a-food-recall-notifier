@@ -56,7 +56,7 @@
               "RelativeDocumentMoniker": "MauiApp1\\ClientAPI.cs",
               "ToolTip": "C:\\Users\\Kenshin\\Documents\\GitHub\\cse115a-food-recall-notifier\\MauiApp1\\ClientAPI.cs",
               "RelativeToolTip": "MauiApp1\\ClientAPI.cs",
-              "ViewState": "AgIAABMAAAAAAAAAAAA5wCoAAAAqAAAAAAAAAA==",
+              "ViewState": "AgIAAHAAAAAAAAAAAAAcwIgAAAAuAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-04T22:01:00.954Z",
               "EditorCaption": ""
@@ -69,7 +69,7 @@
               "RelativeDocumentMoniker": "MauiApp1\\MainPage.xaml.cs",
               "ToolTip": "C:\\Users\\Kenshin\\Documents\\GitHub\\cse115a-food-recall-notifier\\MauiApp1\\MainPage.xaml.cs",
               "RelativeToolTip": "MauiApp1\\MainPage.xaml.cs",
-              "ViewState": "AgIAAA4AAAAAAAAAAAAAwBEAAAAMAAAAAAAAAA==",
+              "ViewState": "AgIAAKcAAAAAAAAAAAAQwMQAAAAfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-01-30T06:56:39.85Z",
               "EditorCaption": ""
@@ -130,9 +130,10 @@
               "RelativeDocumentMoniker": "MauiApp1\\MauiApp1.csproj",
               "ToolTip": "C:\\Users\\Kenshin\\Documents\\GitHub\\cse115a-food-recall-notifier\\MauiApp1\\MauiApp1.csproj",
               "RelativeToolTip": "MauiApp1\\MauiApp1.csproj",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAACEAAAAAAAAAAAAAACMAAABzAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-01-30T06:55:14.636Z"
+              "WhenOpened": "2025-01-30T06:55:14.636Z",
+              "EditorCaption": ""
             }
           ]
         }

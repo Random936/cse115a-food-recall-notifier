@@ -20,19 +20,28 @@ namespace MauiApp1
     public MainPage()
         {
 
+           //InitializeComponent was in preset. 
            InitializeComponent();
+
+            //create a new ClientAPI type. 
             client = new ClientAPI();
 
-            // Run async method properly
+            // Run the initializedataasyn function
             _ = InitializeDataAsync();
+
+            //below this line is just me testing the notification function, if  you wanna see how the notification format is, you can uncomment it and change the parameters, you can see the function below the code.
             //SendNotification("Name and Date", "Reason", "Recall Notification");
 
         }
 
+        //summary: Basically this calls the fetch new server data function, then checks if its different. If it is, send a notification of each new item not in the file. 
+        //newStatus has the new fetched data. So to access the items that are the latest 4 recalls, you would call newStatus.newest, but you may want to just print item names instead of the item itself, so you should use
+        //a for loop iterating through it, and for each item you would do item.product_description.
         private async Task InitializeDataAsync()
         {
             try
             {
+        //Dummy code for testing. 
                 //ServerStatus dummy;
         //        string dummyJson = @"
         //{
@@ -70,21 +79,31 @@ namespace MauiApp1
         //    ""last_modified"": ""20250225""
         //}";
                 //dummy = JsonSerializer.Deserialize<ServerStatus>(dummyJson, _serializerOptions);
+
+                //Loads old file as a ServerStatus
                 Debug.WriteLine("Loading old file...");
                 ServerStatus oldStatus = await client.LoadDataFromFileAsync();
-
-                Debug.WriteLine("Fetching new server data...");
+                //Fetches new server data from https://notifier-api.randomctf.com/
+                Debug.WriteLine("Fetching new server data..."); 
                 ServerStatus newStatus = await client.FetchServerStatus();
                 Debug.WriteLine($"Old: ");
-
-                foreach (var item in oldStatus.newest)
+                
+                //just a loop to print the item names in the file already on phone if there is one. Just for debugging.
+                if (oldStatus != null)
                 {
-                    Debug.WriteLine($"Product: {item.product_description}");
+                    foreach (var item in oldStatus.newest)
+                    {
+                        Debug.WriteLine($"Product: {item.product_description}");
+                    }
                 }
+                else
+                {
+                    Debug.WriteLine("No file found. Not printing each item for old.");
+                }
+                    Debug.WriteLine($"New: ");
 
-                Debug.WriteLine($"New: ");
-                // Extract product descriptions
 
+                //just a loop to print the item name from the fetch. 
                 foreach (var item in newStatus.newest)
                 {
                     Debug.WriteLine($"Product: {item.product_description}");
@@ -92,26 +111,29 @@ namespace MauiApp1
 
 
 
-
+                //if there the website isn't down and exists.
                 if (newStatus != null)
                 {
                     Debug.WriteLine($"New data fetched. Checking for changes...");
-
+                    //checks if items are different.
                     bool isDifferent = IsDatabaseDifferent(oldStatus, newStatus);
 
                     if (isDifferent)
                     {
                         Debug.WriteLine("Database has changed! Sending notification...");
-                        //SendNotification("Product Recall Alert!", "New recalls have been added.", "");
+                        
                         var oldDescriptions = new HashSet<string>(oldStatus.newest.Select(item => item.product_description));
+                        
                         var newRecalls = newStatus.newest.Where(item => !oldDescriptions.Contains(item.product_description)).ToList();
-
+                        //made a new list called newRecalls, where the items that doesn't exist in the oldStatus.newest list is added.
                         if (newRecalls.Count > 0)
                         {
+                            //will only go here if there exists an item that wasn't in the old file. 
                             Debug.WriteLine("New recalls detected! Displaying new items:");
                             foreach (var item in newRecalls)
                             {
                                 //Debug.WriteLine($"[NEW RECALL] Product: {item.product_description}");
+                                //sends notification of the new product name and reason.
                                 SendNotification(item.product_description, item.reason_for_recall, "Recalled");
                             }
                         }
@@ -119,24 +141,29 @@ namespace MauiApp1
                     }
                     else
                     {
+                        //the new items are the same as last time checked.
                         Debug.WriteLine("No changes detected.");
                     }
 
-                    // Save the latest data to file
+                    // Save the latest data to file always after loading and checking.
                     await client.SaveDataToFileAsync(newStatus);
                     Debug.WriteLine("Saved");
                 }
                 else
                 {
+                    //newStatus is broken, website could be down or data is misformatted.
                     Debug.WriteLine("New data is null. No update performed.");
                 }
             }
             catch (Exception ex)
             {
+                //everything broke if printed haha...
                 Debug.WriteLine($"Error in InitializeDataAsync: {ex.Message}");
             }
         }
 
+
+        //function that doess a quick check if the ServerStatus datas exist, and if they do check if they are equal. 
         private bool IsDatabaseDifferent(ServerStatus oldData, ServerStatus newData)
         {
             if (oldData == null || newData == null)
@@ -152,9 +179,8 @@ namespace MauiApp1
             return !oldJson.Equals(newJson);
         }
 
-        /// <summary>
-        /// Sends a local notification when new recalls are detected.
-        /// </summary>
+       
+        //function to send a notification. 
         private void SendNotification(string title, string message, string subtitle)
         {
 
@@ -168,11 +194,14 @@ namespace MauiApp1
                 Description = message,
                 BadgeNumber = count
             };
-
+            //push notification
             LocalNotificationCenter.Current.Show(request);
             Debug.WriteLine("Notification sent!");
         }
 
+
+
+        //useless code from preset is below.
         private void OnCounterClicked(object sender, EventArgs e)
         {
             count++;
