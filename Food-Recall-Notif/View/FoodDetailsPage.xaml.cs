@@ -17,9 +17,9 @@ public partial class FoodDetailsPage : ContentPage
 		// Check if FoodItem has been set correctly
 		if (BindingContext is FoodDetailsViewModel viewModel)
 		{
-			if (viewModel.Upc != null)
+			if (viewModel.Recall_number != null)
 			{
-				await viewModel.LoadUpcItemDetailsAsync(viewModel.Upc);
+				await viewModel.LoadUpcItemDetailsAsync(viewModel.Recall_number);
 			}
 			else
 			{

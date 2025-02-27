@@ -2,22 +2,17 @@ using Food_Recall_Notif.Services;
 
 namespace Food_Recall_Notif.ViewModel;
 
-[QueryProperty("Upc", "upc")]
-public partial class FoodDetailsViewModel : BaseViewModel
+[QueryProperty("Recall_number", "recall_number")]
+public partial class FoodDetailsViewModel(FoodService foodService) : BaseViewModel
 {
-    private readonly FoodService? foodService;
+    private readonly FoodService? foodService = foodService;
     [ObservableProperty]
     public UPC_Item? upcItem;
     [ObservableProperty]
-    string upc;
-
-    public FoodDetailsViewModel(FoodService foodService)
-    {
-        this.foodService = foodService;
-    }
+    string? recall_number;
 
     [RelayCommand]
-    public async Task LoadUpcItemDetailsAsync(string upc)
+    public async Task LoadUpcItemDetailsAsync(string recall_number)
     {
         if (IsBusy) return;
 
@@ -28,10 +23,10 @@ public partial class FoodDetailsViewModel : BaseViewModel
             {
                 return;
             }
-            UpcItem = await foodService.GetUPCItem(upc);
+            UpcItem = await foodService.GetUPCItem(recall_number);
             if (UpcItem == null)
             {
-                Debug.Write($"No UPC item found for {upc}\n");
+                Debug.Write($"No recall number found for {recall_number}\n");
             }
         }
         catch (Exception ex)

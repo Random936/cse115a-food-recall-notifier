@@ -12,9 +12,9 @@
     <Grid
         ColumnDefinitions="*,*"
         ColumnSpacing="5"
-        RowDefinitions="1*, 0.5*, 10*, 1*">
+        RowDefinitions="1*, 1*, 0.5*, 10*, 1*">
         <SearchBar Grid.Row="0"
-                   Grid.ColumnSpan="3"
+                   Grid.ColumnSpan="2"
                    x:Name="searchBar"
                    Placeholder="Enter food item"
                    Text="{Binding SearchText}"
@@ -34,7 +34,7 @@
                 HorizontalOptions="Center"
                 Text="Upload Image"/>
         <Picker Grid.Row="2"
-                Grid.Column="3"
+                Grid.ColumnSpan="2"
                 x:Name="sort"
                 Title="Sort by"
                 SelectedItem="{Binding SelectedSortOption, Mode=TwoWay}">
@@ -48,14 +48,14 @@
             </Picker.ItemsSource>
         </Picker>
         <RefreshView Grid.Row="3"
-                     Grid.ColumnSpan="3"
+                     Grid.ColumnSpan="2"
                      Command="{Binding GetFoodCommand}"
                      IsRefreshing="{Binding IsRefreshing}">
             <CollectionView
                 x:Name="DefaultCollectionView"
                 ItemsSource="{Binding CurrentItems}"
                 SelectionMode="None"
-                RemainingItemsThreshold="2"
+                RemainingItemsThreshold="5"
                 RemainingItemsThresholdReachedCommand="{Binding LoadMoreItemsCommand}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="model:Food_Item">
@@ -68,19 +68,20 @@
                                         CommandParameter="{Binding .}"/>
                                 </Border.GestureRecognizers>
                                 <Grid Padding="0"
-                                      ColumnDefinitions="125,*">
+                                      ColumnDefinitions="*">
                                     <VerticalStackLayout
                                         VerticalOptions="Center"
-                                        Grid.Column="1"
                                         Padding="10">
                                         <Label Style="{StaticResource LargeLabel}"
-                                               Text="{Binding upc}"/>
+                                               Text="{Binding recall_number}"/>
                                         <Label Style="{StaticResource MediumLabel}"
-                                               Text="{Binding brand}"/>
+                                               Text="{Binding CityState,  StringFormat='Location: {0}'}"/>
                                         <Label Style="{StaticResource MediumLabel}"
-                                               Text="{Binding description}"/>
+                                               Text="{Binding product_description}"/>
                                         <Label Style="{StaticResource SmallLabel}"
-                                               Text="{Binding date}"/>
+                                               Text="{Binding Date, StringFormat='Date posted: {0}'}"/>
+                                        <Label Style="{StaticResource SmallLabel}"
+                                               Text="{Binding product_type, StringFormat='Product Type {0}'}"/>
                                     </VerticalStackLayout>
                                 </Grid>
                             </Border>
@@ -102,7 +103,7 @@
                 </CollectionView.EmptyView>
             </CollectionView>
         </RefreshView>
-        <Button Grid.Row="3"
+        <Button Grid.Row="4"
                 Grid.Column="0"
                 Text="🏠"
                 VerticalOptions="Center"

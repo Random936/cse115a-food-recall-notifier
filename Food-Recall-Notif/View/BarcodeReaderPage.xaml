@@ -35,9 +35,9 @@
                                         Grid.Column="1"
                                         Padding="10">
                                         <Label Style="{StaticResource LargeLabel}"
-                                               Text="{Binding brand}"/>
+                                               Text="{Binding recall_number}"/>
                                         <Label Style="{StaticResource MediumLabel}"
-                                               Text="{Binding date}"/>
+                                               Text="{Binding product_type}"/>
                                     </VerticalStackLayout>
                                 </Grid>
                             </Border>

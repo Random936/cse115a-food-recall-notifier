@@ -24,6 +24,7 @@ class MauiProgram
 
 		// Register services and view models
 		builder.Services.AddSingleton<FoodService>();
+		builder.Services.AddSingleton<NotificationService>();
 		builder.Services.AddSingleton<FoodViewModel>();
 		builder.Services.AddSingleton<MainPage>();
 		builder.Services.AddTransient<FoodDetailsViewModel>();

@@ -34,7 +34,6 @@ public partial class FoodViewModel : BaseViewModel
             {
                 _searchText = value;
                 OnPropertyChanged();
-                Task.Run(async () => await PerformSearch(_searchText));
             }
         }
     }
@@ -58,9 +57,10 @@ public partial class FoodViewModel : BaseViewModel
     public FoodViewModel(FoodService foodService, IConnectivity connectivity, IGeolocation geolocation)
     {
         this.foodService = foodService;
-        _ = InitializeAsync();
         this.connectivity = connectivity;
         this.geolocation = geolocation;
+        _ = InitializeAsync();
+
     }
 
     private async Task InitializeAsync()
@@ -78,7 +78,7 @@ public partial class FoodViewModel : BaseViewModel
                 $"Please check internet and try again.", "OK");
             return;
         }
-        await Shell.Current.GoToAsync($"{nameof(View.FoodDetailsPage)}?upc={foodItem.upc}");
+        await Shell.Current.GoToAsync($"{nameof(View.FoodDetailsPage)}?recall_number={foodItem.recall_number}");
     }
 
     [RelayCommand]
@@ -201,6 +201,7 @@ public partial class FoodViewModel : BaseViewModel
             }
         }
     }
+    //FIX!!!!
     public void SortItems(string selectedSort)
     {
         Debug.WriteLine(selectedSort);
@@ -211,16 +212,16 @@ public partial class FoodViewModel : BaseViewModel
         switch (selectedSort)
         {
             case "Brand A-Z":
-                sortedList = sortedList.OrderBy(f => f.brand).ToList();
+                sortedList = sortedList.OrderBy(f => f.product_type).ToList();
                 break;
             case "Brand Z-A":
-                sortedList = sortedList.OrderByDescending(f => f.brand).ToList();
+                sortedList = sortedList.OrderByDescending(f => f.product_type).ToList();
                 break;
             case "Newest-Oldest":
-                sortedList = sortedList.OrderByDescending(f => f.date).ToList();
+                sortedList = sortedList.OrderByDescending(f => f.Date).ToList();
                 break;
             case "Oldest-Newest":
-                sortedList = sortedList.OrderBy(f => f.date).ToList();
+                sortedList = sortedList.OrderBy(f => f.Date).ToList();
                 break;
         }
 
@@ -230,8 +231,8 @@ public partial class FoodViewModel : BaseViewModel
             CurrentItems.Add(item);
         }
     }
-    /*[RelayCommand]
-    async Task GetClosestRecalls()
+    [RelayCommand]
+    /*async Task GetClosestRecalls()
     {
         if (IsBusy || CurrentItems.Count == 0)
             return;
@@ -245,7 +246,6 @@ public partial class FoodViewModel : BaseViewModel
                     Timeout = TimeSpan.FromSeconds(30)
                 });
 
-            // Find closest monkey to us
             var first = CurrentItems.OrderBy(m => location.CalculateDistance(
                 new Location(m.Latitude, m.Longitude), DistanceUnits.Miles));
 
