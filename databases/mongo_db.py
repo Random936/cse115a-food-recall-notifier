@@ -40,10 +40,11 @@ class MongoDB(Database):
         projection = {
             "_id": 0,
             "recall_number": 1,
-            "date": 1,
-            "brand": 1,
+            "city": 1,
+            "state": 1,
             "product_type": 1,
-            "description": 1
+            "product_description": 1,
+            "report_date": 1
         }
 
         print(query)

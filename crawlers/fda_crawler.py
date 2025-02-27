@@ -26,7 +26,7 @@ class FDAWebCrawler(WebCrawler):
                 'api_key': self.api_key,
                 'limit': self.limit,
                 'skip': self.skip,
-                'sort': 'report_date:desc',
+                'sort': 'report_date:asc',
                 'search': f'report_date[{lower_date}+TO+{upper_date}]'
             }
 
