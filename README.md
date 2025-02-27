@@ -35,6 +35,8 @@ Recall Item, containing status, product_description, reason_for_recall, and repo
 
 Saves a JSON file at default AppDataDirectory named "server_status.json".
 
+ClientAPI is basically the file with the functions to serialize the data into classes. I've made two classes in the ClientAPI file. MainPage.xaml is where the calls happen. 
+
 Once the app is opened, it takes the file, and compares it to the new data that is used from ClientAPI, basically a "get" but for the website.
 Then it takes the product_descriptions not in the old file, and uses it to make the notification content.
 
