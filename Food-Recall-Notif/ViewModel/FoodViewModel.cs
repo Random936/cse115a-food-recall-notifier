@@ -50,11 +50,11 @@ public partial class FoodViewModel : BaseViewModel
         get => _selectedSortOption;
         set
         {
-            // Update the selected sort option and trigger sorting of items
             if (_selectedSortOption != value)
             {
                 _selectedSortOption = value;
-                SortItems(_selectedSortOption);
+                // Call the SortItems async function
+                OnSelectedSortOptionChangedAsync(_selectedSortOption);
                 OnPropertyChanged();
             }
         }
@@ -80,7 +80,10 @@ public partial class FoodViewModel : BaseViewModel
     {
         await GetFoodAsync();
     }
-
+    private async void OnSelectedSortOptionChangedAsync(string sortOption)
+    {
+        await SortItems(sortOption);
+    }
     // Command to navigate to the details page for a selected food item
     [RelayCommand]
     private async Task GoToDetails(Food_Item foodItem)

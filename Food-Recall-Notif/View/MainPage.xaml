@@ -22,17 +22,12 @@
                    SearchCommandParameter="{Binding SearchText}"
                    TextColor="white"/>
         <Button Grid.Row="1"
-                Grid.Column="0"
+                Grid.ColumnSpan="2"
                 Text="📷"
                 VerticalOptions="Center"
                 HorizontalOptions="Center"
                 Clicked="Button_CameraButtonClicked">
         </Button>
-        <Button Grid.Row="1"
-                Grid.Column="1"
-                VerticalOptions="Center"
-                HorizontalOptions="Center"
-                Text="Upload Image"/>
         <Picker Grid.Row="2"
                 Grid.ColumnSpan="2"
                 x:Name="sort"
