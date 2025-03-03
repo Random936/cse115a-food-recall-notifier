@@ -61,8 +61,8 @@ public partial class FoodViewModel : BaseViewModel
     }
 
     // Dependencies for connectivity and geolocation services
-    IConnectivity connectivity;
-    IGeolocation geolocation;
+    readonly IConnectivity connectivity;
+    readonly IGeolocation geolocation;
 
     // Constructor to initialize services and begin data retrieval
     public FoodViewModel(FoodService foodService, IConnectivity connectivity, IGeolocation geolocation)
@@ -248,7 +248,7 @@ public partial class FoodViewModel : BaseViewModel
     }
 
     // Method to sort the current items based on the selected sort option
-    public void SortItems(string selectedSort)
+    public async Task SortItems(string selectedSort)
     {
         // Return if the sort option is empty
         if (string.IsNullOrEmpty(selectedSort)) return;
@@ -260,53 +260,93 @@ public partial class FoodViewModel : BaseViewModel
         switch (selectedSort)
         {
             case "Brand A-Z":
-                sortedList = sortedList.OrderBy(f => f.product_type).ToList();
+                sortedList = [.. sortedList.OrderBy(f => f.product_type)];
                 break;
             case "Brand Z-A":
-                sortedList = sortedList.OrderByDescending(f => f.product_type).ToList();
+                sortedList = [.. sortedList.OrderByDescending(f => f.product_type)];
                 break;
             case "Newest-Oldest":
-                sortedList = sortedList.OrderByDescending(f => f.Date).ToList();
+                sortedList = [.. sortedList.OrderByDescending(f => f.Date)];
                 break;
             case "Oldest-Newest":
-                sortedList = sortedList.OrderBy(f => f.Date).ToList();
+                sortedList = [.. sortedList.OrderBy(f => f.Date)];
+                break;
+            case "Nearest-Furthest":
+                sortedList = await SortByDistance();
                 break;
         }
-
-        // Update the current items collection with the sorted list
         CurrentItems.Clear();
         foreach (var item in sortedList)
         {
             CurrentItems.Add(item);
         }
     }
-    /*
-    [RelayCommand]
-    async Task GetClosestRecalls()
+    private async Task<List<Food_Item>> SortByDistance()
     {
-        if (IsBusy || CurrentItems.Count == 0)
-            return;
+        if (CurrentItems.Count == 0) return CurrentItems.ToList();
 
         try
         {
-            // Get cached location, else get real location.
-            var location = await geolocation.GetLastKnownLocationAsync() ?? await geolocation.GetLocationAsync(new GeolocationRequest
+            // Get user's current location
+            var location = await geolocation.GetLastKnownLocationAsync()
+                ?? await geolocation.GetLocationAsync(new GeolocationRequest
                 {
                     DesiredAccuracy = GeolocationAccuracy.Medium,
                     Timeout = TimeSpan.FromSeconds(30)
                 });
 
-            var first = CurrentItems.OrderBy(m => location.CalculateDistance(
-                new Location(m.Latitude, m.Longitude), DistanceUnits.Miles));
+            if (location == null)
+            {
+                await Shell.Current.DisplayAlert("Error", "Unable to retrieve location", "OK");
+                return [.. CurrentItems];
+            }
 
-            await Shell.Current.DisplayAlert("", first.Name + " " +
-                first.Location, "OK");
+            var recallsWithCoordinates = new List<(Food_Item Item, Location RecallLocation)>();
 
+            foreach (var item in CurrentItems)
+            {
+                var recallLocation = await GetCoordinatesFromCityState(item.city, item.state);
+                if (recallLocation != null)
+                {
+                    recallsWithCoordinates.Add((item, recallLocation));
+                }
+            }
+
+            // Sort recalls by closest distance to user
+            var sortedRecalls = recallsWithCoordinates
+                .OrderBy(r => location.CalculateDistance(r.RecallLocation, DistanceUnits.Miles))
+                .Select(r => r.Item)
+                .ToList();
+
+            return sortedRecalls;
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Unable to query location: {ex.Message}");
+            Debug.WriteLine($"Unable to sort by distance: {ex.Message}");
             await Shell.Current.DisplayAlert("Error!", ex.Message, "OK");
+            return [.. CurrentItems];
         }
-    }*/
+    }
+    static async Task<Location?> GetCoordinatesFromCityState(string city, string state)
+    {
+        try
+        {
+            var locations = await Geocoding.GetLocationsAsync($"{city}, {state}");
+            var location = locations?.FirstOrDefault();
+
+            if (location != null)
+            {
+                Debug.WriteLine($"Latitude: {location.Latitude}, Longitude: {location.Longitude}");
+                return new Location(location.Latitude, location.Longitude);
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Geocoding failed for {city}, {state}: {ex.Message}");
+        }
+
+        return null;
+    }
+
+
 }
