@@ -21,9 +21,6 @@ obj/
 *.zip
 *.tar.gz
 
-# Ignore platform-specific builds
-platforms/
-
 # Ignore secrets
 appsettings.json
 secrets.json

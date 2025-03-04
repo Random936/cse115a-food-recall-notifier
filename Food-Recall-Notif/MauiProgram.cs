@@ -1,8 +1,7 @@
-﻿using Food_Recall_Notif.Model;
-using Food_Recall_Notif.Services;
+﻿using Food_Recall_Notif.Services;
 using Food_Recall_Notif.View;
-using Food_Recall_Notif.ViewModel;
 using Microsoft.Extensions.Logging;
+using Plugin.LocalNotification;
 using ZXing.Net.Maui.Controls;
 
 namespace Food_Recall_Notif;
