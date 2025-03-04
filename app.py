@@ -6,12 +6,13 @@ from flask import Flask, request
 from databases.mongo_db import MongoDB
 from config import MONGO_DB_HOST, MONGO_DB_PORT
 from crawlers.fda_crawler import FDAWebCrawler
+from parsers.upc_parser import UPCParser
 
 load_dotenv()
 app = Flask(__name__)
 
 database = MongoDB(MONGO_DB_HOST, MONGO_DB_PORT)
-database.update(FDAWebCrawler(os.getenv("FDA_API_KEY"), limit=1000), [])
+database.update(FDAWebCrawler(os.getenv("FDA_API_KEY"), limit=1000), [UPCParser()])
 
 @app.route('/')
 def root_path():
