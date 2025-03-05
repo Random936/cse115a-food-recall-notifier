@@ -40,6 +40,7 @@ class MongoDB(Database):
         projection = {
             "_id": 0,
             "recall_number": 1,
+            "upc": 1,
             "city": 1,
             "state": 1,
             "product_type": 1,
