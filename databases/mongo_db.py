@@ -44,6 +44,7 @@ class MongoDB(Database):
             "city": 1,
             "state": 1,
             "product_type": 1,
+            "recalling_firm": 1,
             "product_description": 1,
             "report_date": 1
         }
