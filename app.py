@@ -52,10 +52,13 @@ def api_search(field: str, term: str):
     else:
         count = int(count)
 
+    # Can be either asc or desc (sorts by date)
+    sort = request.args.get('sort')
+
     if term == "all":
         term = ""
 
-    results = database.search(field, term, offset, count)
+    results = database.search(field, term, offset, count, sort=sort)
     return json.dumps(results)
 
 

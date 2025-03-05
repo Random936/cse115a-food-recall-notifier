@@ -8,7 +8,7 @@ class Database:
     def query(self, key):
         raise NotImplementedError
 
-    def search(self, field, term, offset, count):
+    def search(self, field, term, offset, count, sort=None):
         raise NotImplementedError
 
     def update(self):

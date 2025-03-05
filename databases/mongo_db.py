@@ -32,7 +32,7 @@ class MongoDB(Database):
 
         return item
 
-    def search(self, field, term, offset, count):
+    def search(self, field, term, offset, count, sort=None):
         assert isinstance(offset, int) and isinstance(count, int)
         assert offset >= 0 and count > 0
 
@@ -48,8 +48,14 @@ class MongoDB(Database):
             "report_date": 1
         }
 
-        print(query)
+        print(f"Recieved DB search with query: {query}")
         cursor = self.recalls.find(query, projection)
+
+        if sort == "asc":
+            cursor.sort("report_date", pymongo.ASCENDING)
+
+        if sort == "desc":
+            cursor.sort("report_date", pymongo.DESCENDING)
 
         if offset > 0:
             cursor.skip(offset)
@@ -58,7 +64,6 @@ class MongoDB(Database):
             cursor.limit(count)
 
         results = list(cursor)
-        print(results)
         return results
 
     def update(self, webcrawler, parsers):
@@ -72,7 +77,6 @@ class MongoDB(Database):
         else:
             print(f"Updating database. Latest recall in database: {self.last_modified()}")
             date = datetime.strptime(self.last_modified(), "%Y%m%d")
-            print(f"debug: {date}")
             results = webcrawler.get_after(date)
 
         for result in results:
