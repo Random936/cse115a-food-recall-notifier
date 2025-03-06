@@ -1,1 +1,0 @@
-This is the Web Scraper for Food Recall Notiffier
