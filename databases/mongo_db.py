@@ -36,13 +36,14 @@ class MongoDB(Database):
         assert isinstance(offset, int) and isinstance(count, int)
         assert offset >= 0 and count > 0
 
-        query = {field: {"$regex": term} }
+        query = {field: {"$regex": term, "$options": "i"} }
         projection = {
             "_id": 0,
             "recall_number": 1,
             "upc": 1,
             "distribution_pattern": 1,
             "product_type": 1,
+            "reason_for_recall": 1,
             "recalling_firm": 1,
             "product_description": 1,
             "report_date": 1
