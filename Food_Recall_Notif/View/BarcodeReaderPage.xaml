@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Food_Recall_Notif.View.BarcodeReaderPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
+    xmlns:model="clr-namespace:Food_Recall_Notif.Model"
+    xmlns:viewmodel="clr-namespace:Food_Recall_Notif.ViewModel"
+    x:DataType="viewmodel:FoodViewModel"
+    xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
+    BackgroundColor="{StaticResource Background}">
+
+    <Grid>
+        <Label Text="Point the back camera at the barcode."
+       HorizontalOptions="Center"
+       FontSize="16"
+       TextColor="Black"/>
+        <!-- CameraBarcodeReaderView -->
+        <zxing:CameraBarcodeReaderView
+            x:Name="barcodeReader"
+            BarcodesDetected="BarcodeReader_BarcodesDetected"
+            IsDetecting="True"
+            CameraLocation="Rear"
+            />
+
+            <CollectionView x:Name="DefaultCollectionView"
+                ItemsSource="{Binding BarcodeResults}"
+                SelectionMode="None"
+                IsVisible="{Binding HasSearched}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="model:Food_Item">
+                        <Grid Padding="10">
+                        <Border HeightRequest="125"
+                        >
+                            <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:FoodViewModel}}, x:DataType=viewmodel:FoodViewModel, Path=GoToDetailsCommand}"
+                                              CommandParameter="{Binding .}"/>
+                                </Border.GestureRecognizers>
+                                <Grid Padding="0" ColumnDefinitions="*">
+                                    <VerticalStackLayout VerticalOptions="Center" Padding="10">
+                                        <Label Text="{Binding recall_number}"/>
+                                        <Label Text="{Binding CityState, StringFormat='Location: {0}'}"/>
+                                        <Label Text="{Binding Date, StringFormat='Date posted: {0}'}"/>
+                                        <Label Text="{Binding product_type, StringFormat='Product Type {0}'}"/>
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+                <CollectionView.EmptyView>
+                    <ContentView>
+                        <StackLayout HorizontalOptions="Center" VerticalOptions="End">
+                            <Label Text="No results matched your search."
+                       Margin="10,25,10,10"
+                       FontAttributes="Bold"
+                       FontSize="18"
+                       HorizontalOptions="Fill"
+                       HorizontalTextAlignment="Center"
+                        TextColor="White"/>
+                        </StackLayout>
+                    </ContentView>
+                </CollectionView.EmptyView>
+            </CollectionView>
+    </Grid>
+</ContentPage>
