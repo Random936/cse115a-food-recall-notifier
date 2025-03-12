@@ -11,13 +11,16 @@ FDA_RECALLS_URL = "https://www.fda.gov/safety/recalls-market-withdrawals-safety-
 AJAX_URL = "https://www.fda.gov/datatables/views/ajax"
 
 HEADERS = {
-    "User-Agent": ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                   "AppleWebKit/537.36 (KHTML, like Gecko) "
-                   "Chrome/91.0.4472.124 Safari/537.36")
+    "User-Agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/91.0.4472.124 Safari/537.36"
+    )
 }
 
+
 def flatten_list(lst):
-# converts all elements in a nested list to strings
+    # converts all elements in a nested list to strings
     result = []
     for item in lst:
         if isinstance(item, list):
@@ -26,8 +29,9 @@ def flatten_list(lst):
             result.append(str(item))
     return result
 
+
 def fetch_food_recall_links_static(url):
-# The first page is a static page
+    # The first page is a static page
     recall_links = []
     try:
         response = requests.get(url, headers=HEADERS)
@@ -36,12 +40,16 @@ def fetch_food_recall_links_static(url):
         print(f"Error in request: {e}")
         return recall_links
 
-    soup = BeautifulSoup(response.text, 'html.parser')
+    soup = BeautifulSoup(response.text, "html.parser")
     rows = soup.select("#datatable tbody tr")
     for row in rows:
         product_type_td = row.select_one("td.views-field-field-regulated-product-field")
-        if product_type_td and "Food & Beverages" in product_type_td.get_text(strip=True):
-            link_tag = row.select_one("a[href^='/safety/recalls-market-withdrawals-safety-alerts/']")
+        if product_type_td and "Food & Beverages" in product_type_td.get_text(
+            strip=True
+        ):
+            link_tag = row.select_one(
+                "a[href^='/safety/recalls-market-withdrawals-safety-alerts/']"
+            )
             if link_tag:
                 href = link_tag["href"]
                 full_url = urljoin("https://www.fda.gov", href)
@@ -49,9 +57,10 @@ def fetch_food_recall_links_static(url):
                     recall_links.append(full_url)
     return recall_links
 
+
 def fetch_food_recall_links_ajax(page):
-# The rest pages are loaded by AJAX
-# Simulate AJAX request to get the link of recall announcement, page = AJAX page number, starting from 1 (the first page has been taken for static pages), and 10 data are returned per page.
+    # The rest pages are loaded by AJAX
+    # Simulate AJAX request to get the link of recall announcement, page = AJAX page number, starting from 1 (the first page has been taken for static pages), and 10 data are returned per page.
     params = {
         "_drupal_ajax": 1,
         "_wrapper_format": "drupal_ajax",
@@ -63,11 +72,11 @@ def fetch_food_recall_links_ajax(page):
         "view_name": "recall_solr_index",
         "view_path": "/safety/recalls-market-withdrawals-safety-alerts",
         "draw": page + 1,
-        "start": page * 10,  
+        "start": page * 10,
         "length": 10,
         "search_api_fulltext": "",
-        "field_regulated_product_field": "All",  
-        "field_terminated_recall": "All"
+        "field_regulated_product_field": "All",
+        "field_terminated_recall": "All",
     }
     recall_links = []
     try:
@@ -84,15 +93,21 @@ def fetch_food_recall_links_ajax(page):
         return recall_links
 
     # Parsing by list
-    if isinstance(ajax_data, dict) and "data" in ajax_data and isinstance(ajax_data["data"], list):
+    if (
+        isinstance(ajax_data, dict)
+        and "data" in ajax_data
+        and isinstance(ajax_data["data"], list)
+    ):
         for row in ajax_data["data"]:
             if isinstance(row, list) and len(row) >= 4:
                 # Column 3 (index 3) is the product type
-                product_type = BeautifulSoup(row[3], 'html.parser').get_text(strip=True)
-                if "Food" in product_type:  # For "Food"，"Food & Beverages"、"Foodborne Illness"、"Allergens" (Food & Beverages)
+                product_type = BeautifulSoup(row[3], "html.parser").get_text(strip=True)
+                if (
+                    "Food" in product_type
+                ):  # For "Food"，"Food & Beverages"、"Foodborne Illness"、"Allergens" (Food & Beverages)
                     # Column 2 (index 1) contains links
-                    soup_col = BeautifulSoup(row[1], 'html.parser')
-                    link_tag = soup_col.find('a')
+                    soup_col = BeautifulSoup(row[1], "html.parser")
+                    link_tag = soup_col.find("a")
                     if link_tag and link_tag.get("href"):
                         full_url = urljoin("https://www.fda.gov", link_tag["href"])
                         if full_url not in recall_links:
@@ -110,12 +125,20 @@ def fetch_food_recall_links_ajax(page):
                         html_fragment = data_field
                     else:
                         continue
-                    fragment_soup = BeautifulSoup(html_fragment, 'html.parser')
+                    fragment_soup = BeautifulSoup(html_fragment, "html.parser")
                     rows = fragment_soup.select("tr")
                     for row in rows:
-                        product_type_td = row.select_one("td.views-field-field-regulated-product-field")
-                        if product_type_td and "Food & Beverages" in product_type_td.get_text(strip=True):
-                            link_tag = row.select_one("a[href^='/safety/recalls-market-withdrawals-safety-alerts/']")
+                        product_type_td = row.select_one(
+                            "td.views-field-field-regulated-product-field"
+                        )
+                        if (
+                            product_type_td
+                            and "Food & Beverages"
+                            in product_type_td.get_text(strip=True)
+                        ):
+                            link_tag = row.select_one(
+                                "a[href^='/safety/recalls-market-withdrawals-safety-alerts/']"
+                            )
                             if link_tag:
                                 href = link_tag["href"]
                                 full_url = urljoin("https://www.fda.gov", href)
@@ -130,24 +153,36 @@ def fetch_food_recall_links_ajax(page):
                 html_fragment = data_field
             else:
                 html_fragment = ""
-            fragment_soup = BeautifulSoup(html_fragment, 'html.parser')
+            fragment_soup = BeautifulSoup(html_fragment, "html.parser")
             rows = fragment_soup.select("tr")
             for row in rows:
-                product_type_td = row.select_one("td.views-field-field-regulated-product-field")
-                if product_type_td and "Food & Beverages" in product_type_td.get_text(strip=True):
-                    link_tag = row.select_one("a[href^='/safety/recalls-market-withdrawals-safety-alerts/']")
+                product_type_td = row.select_one(
+                    "td.views-field-field-regulated-product-field"
+                )
+                if product_type_td and "Food & Beverages" in product_type_td.get_text(
+                    strip=True
+                ):
+                    link_tag = row.select_one(
+                        "a[href^='/safety/recalls-market-withdrawals-safety-alerts/']"
+                    )
                     if link_tag:
                         href = link_tag["href"]
                         full_url = urljoin("https://www.fda.gov", href)
                         if full_url not in recall_links:
                             recall_links.append(full_url)
         else:
-            fragment_soup = BeautifulSoup(response.text, 'html.parser')
+            fragment_soup = BeautifulSoup(response.text, "html.parser")
             rows = fragment_soup.select("tr")
             for row in rows:
-                product_type_td = row.select_one("td.views-field-field-regulated-product-field")
-                if product_type_td and "Food & Beverages" in product_type_td.get_text(strip=True):
-                    link_tag = row.select_one("a[href^='/safety/recalls-market-withdrawals-safety-alerts/']")
+                product_type_td = row.select_one(
+                    "td.views-field-field-regulated-product-field"
+                )
+                if product_type_td and "Food & Beverages" in product_type_td.get_text(
+                    strip=True
+                ):
+                    link_tag = row.select_one(
+                        "a[href^='/safety/recalls-market-withdrawals-safety-alerts/']"
+                    )
                     if link_tag:
                         href = link_tag["href"]
                         full_url = urljoin("https://www.fda.gov", href)
@@ -155,8 +190,9 @@ def fetch_food_recall_links_ajax(page):
                             recall_links.append(full_url)
     return recall_links
 
+
 def fetch_recall_details(url):
-# Fetch the details of each recall announcement
+    # Fetch the details of each recall announcement
     try:
         response = requests.get(url, headers=HEADERS)
         response.raise_for_status()
@@ -164,42 +200,43 @@ def fetch_recall_details(url):
         print(f"Request Error {url}: {e}")
         return None
 
-    soup = BeautifulSoup(response.text, 'html.parser')
+    soup = BeautifulSoup(response.text, "html.parser")
 
     # Get the company announcement
-    company_announcement_section = soup.find('h2', id='recall-announcement')
+    company_announcement_section = soup.find("h2", id="recall-announcement")
     company_announcement = "No announcement found"
     if company_announcement_section:
-        paragraphs = company_announcement_section.find_next_siblings('p')
+        paragraphs = company_announcement_section.find_next_siblings("p")
         company_announcement = " ".join([p.get_text(strip=True) for p in paragraphs])
 
     # Get the product images
     product_images = []
-    image_section = soup.find('div', id='recall-photos')
+    image_section = soup.find("div", id="recall-photos")
     if image_section:
-        img_tags = image_section.find_all('img')
+        img_tags = image_section.find_all("img")
         for img in img_tags:
-            img_src = img.get('src', '')
-            if img_src.startswith('/files'):
+            img_src = img.get("src", "")
+            if img_src.startswith("/files"):
                 img_src = urljoin("https://www.fda.gov", img_src)
             product_images.append(img_src)
 
     # Get the product details
     details = {}
-    description_list = soup.find('dl', class_='lcds-description-list--grid')
+    description_list = soup.find("dl", class_="lcds-description-list--grid")
     if description_list:
-        items = description_list.find_all(['dt', 'dd'])
+        items = description_list.find_all(["dt", "dd"])
         for i in range(0, len(items), 2):
             key = items[i].get_text(strip=True).replace(":", "")
-            value = items[i+1].get_text(strip=True)
+            value = items[i + 1].get_text(strip=True)
             details[key] = value
 
     return {
-        'url': url,
-        'company_announcement': company_announcement,
-        'product_images': product_images,
-        'product_details': details
+        "url": url,
+        "company_announcement": company_announcement,
+        "product_images": product_images,
+        "product_details": details,
     }
+
 
 def main():
     all_links = set()
@@ -222,7 +259,9 @@ def main():
             print(f"No new links on page {page} , stopping pagination.")
             break
         all_links.update(new_links)
-        print(f"Page {page} AJAX crawled {len(new_links)} new links，total {len(all_links)} links.")
+        print(
+            f"Page {page} AJAX crawled {len(new_links)} new links，total {len(all_links)} links."
+        )
         page += 1
         time.sleep(2)
 
@@ -237,23 +276,10 @@ def main():
             all_recall_details.append(details)
         time.sleep(2)
 
-    with open('food_recall_announcement_photo.json', 'w', encoding='utf-8') as f:
+    with open("food_recall_announcement_photo.json", "w", encoding="utf-8") as f:
         json.dump(all_recall_details, f, ensure_ascii=False, indent=4)
     print("All recall details have been saved to food_recall_announcement_photo.json")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
