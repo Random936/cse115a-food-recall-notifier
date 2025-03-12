@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="Food_Recall_Notif.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:view="clr-namespace:Food_Recall_Notif.View"
+    FlyoutBehavior="Disabled"
+    Title="Food_Recall_Notif">
+    <ShellContent ContentTemplate="{DataTemplate view:MainPage}"
+            Route="MainPage"/>
+
+</Shell>
