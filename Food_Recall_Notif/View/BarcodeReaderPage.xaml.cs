@@ -56,13 +56,12 @@ namespace Food_Recall_Notif.View
         {
             Dispatcher.Dispatch(() =>
             {
-                Debug.WriteLine("BARCODE DETECTED");
-
                 string upcCode = e.Results[0].Value;
                 if (upcCode != null)
                 {
                     DisplayAlert("Barcode Detected", $"UPC Code: {upcCode}", "OK");
                     viewModel?.PerformBarcodeSearchCommand.Execute(upcCode);
+
                     barcodeReader.IsDetecting = false;  // Stop detecting after reading
                 }
             });

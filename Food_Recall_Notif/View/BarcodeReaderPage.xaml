@@ -10,39 +10,49 @@
     xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
     BackgroundColor="{StaticResource Background}">
 
-    <Grid>
-        <Label Text="Point the back camera at the barcode."
-       HorizontalOptions="Center"
-       FontSize="16"
-       TextColor="Black"/>
+    <Grid RowDefinitions="Auto,9*, 2*" >
+        <Border BackgroundColor="Grey" Grid.Row="0" ZIndex="1">
+            <Label Text="Point the back camera at the barcode."
+                HorizontalOptions="Center"
+                FontSize="15"
+                TextColor="White"/>
+        </Border>
+
         <!-- CameraBarcodeReaderView -->
         <zxing:CameraBarcodeReaderView
             x:Name="barcodeReader"
             BarcodesDetected="BarcodeReader_BarcodesDetected"
             IsDetecting="True"
             CameraLocation="Rear"
+            Grid.Row="1"
             />
-
-            <CollectionView x:Name="DefaultCollectionView"
+        <!-- Results from barcode search -->
+        <CollectionView x:Name="DefaultCollectionView"
                 ItemsSource="{Binding BarcodeResults}"
                 SelectionMode="None"
-                IsVisible="{Binding HasSearched}">
+                IsVisible="{Binding HasSearched}"
+                Grid.Row="2"
+                >
+                
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="model:Food_Item">
                         <Grid Padding="10">
-                        <Border HeightRequest="125"
-                        >
+                        <Border HeightRequest="100"
+                                StrokeShape="RoundRectangle 10"
+                                StrokeThickness="0.5"
+                                Stroke="{StaticResource White}"
+                                BackgroundColor="{StaticResource White}"
+                                >
                             <Border.GestureRecognizers>
                                     <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:FoodViewModel}}, x:DataType=viewmodel:FoodViewModel, Path=GoToDetailsCommand}"
                                               CommandParameter="{Binding .}"/>
                                 </Border.GestureRecognizers>
                                 <Grid Padding="0" ColumnDefinitions="*">
-                                    <VerticalStackLayout VerticalOptions="Center" Padding="10">
-                                        <Label Text="{Binding recall_number}"/>
-                                        <Label Text="{Binding CityState, StringFormat='Location: {0}'}"/>
-                                        <Label Text="{Binding Date, StringFormat='Date posted: {0}'}"/>
-                                        <Label Text="{Binding product_type, StringFormat='Product Type {0}'}"/>
-                                    </VerticalStackLayout>
+                                <VerticalStackLayout VerticalOptions="Center" Padding="10">
+                                    <Label Text="{Binding recalling_firm}"  FontSize="9" TextColor="Black"/>
+                                    <Label Text="{Binding ParsedStatesFormatted}" LineBreakMode="WordWrap" FontSize="9" MaxLines="2" TextColor="Black"/>
+                                    <Label Text="{Binding Date, StringFormat='Report date: {0}'}"  FontSize="9" TextColor="Black"/>
+                                </VerticalStackLayout>
                                 </Grid>
                             </Border>
                         </Grid>
@@ -50,17 +60,15 @@
                 </CollectionView.ItemTemplate>
                 <CollectionView.EmptyView>
                     <ContentView>
-                        <StackLayout HorizontalOptions="Center" VerticalOptions="End">
-                            <Label Text="No results matched your search."
-                       Margin="10,25,10,10"
-                       FontAttributes="Bold"
-                       FontSize="18"
-                       HorizontalOptions="Fill"
-                       HorizontalTextAlignment="Center"
-                        TextColor="White"/>
+                    <StackLayout HorizontalOptions="Center" VerticalOptions="Center">
+                            <Label Text="No items matched your search!"
+                           TextColor="White"
+                           FontAttributes="Bold"
+                           Margin="10, 10, 10, 10"
+                           FontSize="12"/>
                         </StackLayout>
                     </ContentView>
                 </CollectionView.EmptyView>
-            </CollectionView>
+        </CollectionView>
     </Grid>
 </ContentPage>

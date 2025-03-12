@@ -7,8 +7,10 @@
        xmlns:viewmodel="clr-namespace:Food_Recall_Notif.ViewModel"
        x:DataType="viewmodel:FoodDetailsViewModel"
        BackgroundColor="{StaticResource Background}">
-
-       <ScrollView>
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior Command="{Binding GoToMainCommand}"/>
+    </Shell.BackButtonBehavior>
+    <ScrollView>
               <Grid Padding="10"
                     RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
                      

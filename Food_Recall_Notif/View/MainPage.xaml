@@ -72,7 +72,7 @@
 />
             </Border>
 
-            <!-- Main Content: RefreshView with CollectionView -->
+            <!-- Main Content: RefreshView with CollectionView-->
             <RefreshView Grid.Row="3" Grid.ColumnSpan="2"
                          Margin="0,145,0,80"
                          Command="{Binding GetFoodCommand}"
@@ -118,6 +118,7 @@
                                 <Label Text="No items matched your search."
                                        TextColor="White"
                                        FontAttributes="Bold"
+                                       Margin="10, 10, 10, 10"
                                        FontSize="14"/>
                             </StackLayout>
                         </ContentView>
@@ -213,7 +214,7 @@
             WidthRequest="60"
             HeightRequest="60"
             Clicked="Button_CameraButtonClicked"
-            AbsoluteLayout.LayoutBounds="0.145,.3,0.1,0.1"
+            AbsoluteLayout.LayoutBounds="0.145,.25,0.1,0.1"
             AbsoluteLayout.LayoutFlags="PositionProportional"/>
         <Label Text="Camera"
             TextColor="white"

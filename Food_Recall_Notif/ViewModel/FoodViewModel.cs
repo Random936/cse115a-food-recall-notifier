@@ -10,7 +10,7 @@ public partial class FoodViewModel : BaseViewModel
     // Observable collections to hold food items and search results
     public ObservableCollection<Food_Item> DefaultResults { get; set; } = [];
     public ObservableCollection<Food_Item> CurrentItems { get; set; } = [];
-    public required ObservableCollection<Food_Item> BarcodeResults;
+    public required ObservableCollection<Food_Item> BarcodeResults { get; set; } = [];
 
     // Properties to manage UI states like refreshing and busy indicators
     [ObservableProperty]
@@ -225,10 +225,11 @@ public partial class FoodViewModel : BaseViewModel
             else
             {
                 // Perform search using the query and update the current items collection
-                
+
                 var searchResult = await foodService.SearchUpc(barcode) ?? [];
                 HasSearched = true;
                 BarcodeResults.Clear();
+                Debug.WriteLine($"Search Results count: {searchResult.Count}");
                 if (searchResult.Count == 0) return;
                 foreach (var food in searchResult)
                 {

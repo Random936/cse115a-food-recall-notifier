@@ -9,7 +9,9 @@ public partial class App : Application
     {
         InitializeComponent();
         Services = serviceProvider;
-        // MainPage = new AppShell();
+        
+
+
     }
 
     protected override Window CreateWindow(IActivationState? activationState)

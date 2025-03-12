@@ -38,4 +38,9 @@ public partial class FoodDetailsViewModel(FoodService foodService) : BaseViewMod
             IsBusy = false;
         }
     }
+    [RelayCommand]
+    public static async Task GoToMain()
+    {
+        await Shell.Current.GoToAsync("//MainPage");
+    }
 }
