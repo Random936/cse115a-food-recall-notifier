@@ -1,5 +1,7 @@
 * CSE115A - Food Recall Notifier
 
+*Google Drive: https://drive.google.com/drive/folders/1XpQUz_LkDTTf1zlTh7pdDwlObScMX6ND
+
 * Vision Statement
 
 Food Recall Notifier will be created to notify users of any recalled food quickly and through their phone based on the [[https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts][FDA website]]. In order to more quickly alert the user of recall with minimal time impact, a mobile application will be used allowing for bar code scanning.
